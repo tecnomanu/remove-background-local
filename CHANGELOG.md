@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.4.0 — Compact controls, close all & rename
+
+- Compact top row: model on one side, actions on the other
+- 'Close all' to clear the working view (kept in the sidebar)
+- Renamed to 'rm.background local' with a not-affiliated disclaimer
 ## v1.3.0 — Per-image model, reprocess & relative time
 
 - Show the model used per image; change it and reprocess
