@@ -81,6 +81,78 @@ MODEL_SIZES_MB = {
     "birefnet-portrait": 930,
 }
 
+# Rich, human-readable details for each model. Shown on the "Models" page in the
+# UI so people can pick the right one. Times are rough per-image figures on
+# Apple Silicon using CPU execution.
+MODEL_INFO = {
+    "isnet-general-use": {
+        "title": "ISNet General",
+        "speed": "Fast (~1s)",
+        "quality": "Very good",
+        "best_for": "Default for any image",
+        "description": (
+            "The default. A strong balance of speed and quality, reliable on "
+            "photos, product shots and people. Fast on CPU and accurate in most "
+            "situations, which makes it the best first choice."
+        ),
+    },
+    "u2net": {
+        "title": "U2Net",
+        "speed": "Fastest (~0.5s)",
+        "quality": "Good",
+        "best_for": "Simple subjects, products",
+        "description": (
+            "The classic background-removal model. Very fast and good for "
+            "subjects with clear edges, such as product photos on plain "
+            "backgrounds. Edges can be rougher than ISNet or BiRefNet."
+        ),
+    },
+    "u2net_human_seg": {
+        "title": "U2Net Human",
+        "speed": "Fastest (~0.5s)",
+        "quality": "Good (people only)",
+        "best_for": "People, quick cut-outs",
+        "description": (
+            "Trained specifically to segment people. Fast and handy for "
+            "portraits or full-body shots when you do not need the very best "
+            "hair detail. Not meant for objects or animals."
+        ),
+    },
+    "birefnet-general-lite": {
+        "title": "BiRefNet Lite",
+        "speed": "Slower (~9s)",
+        "quality": "High",
+        "best_for": "High quality, reasonable wait",
+        "description": (
+            "A lighter version of BiRefNet. Close to the full model in quality "
+            "but noticeably faster. A good step up from ISNet when you want "
+            "cleaner edges and can wait a few seconds."
+        ),
+    },
+    "birefnet-general": {
+        "title": "BiRefNet General",
+        "speed": "Slowest (~20s)",
+        "quality": "Best",
+        "best_for": "Maximum quality, any image",
+        "description": (
+            "State-of-the-art general segmentation (2024). The highest quality "
+            "for difficult images, with the finest edges. Large (~930 MB) and "
+            "slow on CPU, so use it when quality matters more than speed."
+        ),
+    },
+    "birefnet-portrait": {
+        "title": "BiRefNet Portrait",
+        "speed": "Slow (~20s)",
+        "quality": "Best (people)",
+        "best_for": "People with difficult hair",
+        "description": (
+            "BiRefNet tuned for people. The best option for portraits with "
+            "loose or fly-away hair, especially combined with alpha matting in "
+            "the advanced options. Large and slow, like BiRefNet General."
+        ),
+    },
+}
+
 DEFAULT_MODEL = os.environ.get("REMBG_MODEL", "isnet-general-use")
 MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "30"))
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
@@ -192,6 +264,7 @@ async def models():
         "default": DEFAULT_MODEL,
         "available": AVAILABLE_MODELS,
         "sizes_mb": MODEL_SIZES_MB,
+        "info": MODEL_INFO,
     }
 
 

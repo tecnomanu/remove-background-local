@@ -11,6 +11,7 @@ It ships with **ISNet** as the default (fast and high quality) and also includes
   by one; each result is kept in its own card, nothing gets overwritten
 - **First-run setup screen** — the first time it opens it tells you the model is
   downloading (it is a one-time download) instead of leaving you guessing
+- **Models page** in the top menu explaining what each model is best for
 - Switch between 6 models depending on the case (general, portrait, lite, etc.)
 - Alpha matting mode for fine edges (hair, plants)
 - 100% local processing — your images never leave your machine
@@ -159,16 +160,32 @@ loads the model into memory. The first-run setup screen shows this is happening.
 absolute paths, so a copied/moved `.venv` is broken. `run.sh` detects this and
 rebuilds the environment automatically — just run `./run.sh` again.
 
+## Development
+
+Run the test suite (fast, no network needed — model loading is mocked):
+
+```bash
+./run_tests.sh
+```
+
+Contributing or using an AI agent on this repo? Read [AGENTS.md](AGENTS.md) — it
+covers the architecture, conventions (English, no emojis, CPU default), and the
+rule that every commit must keep the tests green. CI runs the tests on every push.
+
 ## Project structure
 
 ```
 remove-bg-local/
-├── server.py          # FastAPI backend
+├── server.py            # FastAPI backend
 ├── static/
-│   └── index.html     # Frontend (single file)
-├── requirements.txt   # Python dependencies
-├── run.sh             # Startup script
-└── README.md          # This file
+│   └── index.html       # Frontend (single file)
+├── requirements.txt     # Python dependencies
+├── requirements-dev.txt # Test dependencies
+├── run.sh               # Startup script
+├── run_tests.sh         # Test runner
+├── tests/               # pytest suite
+├── AGENTS.md            # Guide for contributors / AI agents
+└── README.md            # This file
 ```
 
 ## Model licenses
