@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/tecnomanu/remove-background-local/compare/v1.12.0...v1.13.0) (2026-06-04)
+
+
+### Features
+
+* add 'rm-bg version' / --version / -v ([07c7410](https://github.com/tecnomanu/remove-background-local/commit/07c7410e53a84a4e9892dcb3823bf6ed01e05640))
+
 ## v1.12.0 — Port-in-use handling, auto-update on open, clearer docs
 
 - If the server is already running, `rm-bg web`/`start` now point you to the
