@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import io
 import os
+import glob
 import time
 import asyncio
 import logging
@@ -87,6 +88,7 @@ MODEL_SIZES_MB = {
 MODEL_INFO = {
     "isnet-general-use": {
         "title": "ISNet General",
+        "tagline": "Recommended for everything",
         "speed": "Fast (~1s)",
         "quality": "Very good",
         "best_for": "Default for any image",
@@ -98,6 +100,7 @@ MODEL_INFO = {
     },
     "u2net": {
         "title": "U2Net",
+        "tagline": "Fast, simple subjects",
         "speed": "Fastest (~0.5s)",
         "quality": "Good",
         "best_for": "Simple subjects, products",
@@ -109,6 +112,7 @@ MODEL_INFO = {
     },
     "u2net_human_seg": {
         "title": "U2Net Human",
+        "tagline": "Recommended for people",
         "speed": "Fastest (~0.5s)",
         "quality": "Good (people only)",
         "best_for": "People, quick cut-outs",
@@ -120,6 +124,7 @@ MODEL_INFO = {
     },
     "birefnet-general-lite": {
         "title": "BiRefNet Lite",
+        "tagline": "High quality, a bit slower",
         "speed": "Slower (~9s)",
         "quality": "High",
         "best_for": "High quality, reasonable wait",
@@ -131,6 +136,7 @@ MODEL_INFO = {
     },
     "birefnet-general": {
         "title": "BiRefNet General",
+        "tagline": "Best quality, slow",
         "speed": "Slowest (~20s)",
         "quality": "Best",
         "best_for": "Maximum quality, any image",
@@ -142,6 +148,7 @@ MODEL_INFO = {
     },
     "birefnet-portrait": {
         "title": "BiRefNet Portrait",
+        "tagline": "Best for people, slow",
         "speed": "Slow (~20s)",
         "quality": "Best (people)",
         "best_for": "People with difficult hair",
@@ -165,6 +172,41 @@ PROVIDERS = [
     for p in os.environ.get("REMBG_PROVIDERS", "CPUExecutionProvider").split(",")
     if p.strip()
 ]
+
+# Where rembg caches the ONNX model files.
+U2NET_HOME = os.path.expanduser(os.environ.get("U2NET_HOME") or "~/.u2net")
+
+
+def model_file(name: str) -> str:
+    return os.path.join(U2NET_HOME, name + ".onnx")
+
+
+def is_downloaded(name: str) -> bool:
+    return os.path.isfile(model_file(name))
+
+
+def download_progress(name: str):
+    """Best-effort download progress (0..1) while a model is being fetched.
+
+    rembg/pooch downloads to a temporary ``tmp*`` file in the cache dir and
+    renames it to ``<name>.onnx`` when finished, so we estimate progress from
+    the size of the newest temp file vs the model's expected size. Returns 1.0
+    when the final file already exists, or None if it cannot be estimated.
+    """
+    if is_downloaded(name):
+        return 1.0
+    total = MODEL_SIZES_MB.get(name, 0) * 1024 * 1024
+    if not total:
+        return None
+    try:
+        tmps = glob.glob(os.path.join(U2NET_HOME, "tmp*"))
+        if not tmps:
+            return 0.0
+        newest = max(tmps, key=os.path.getmtime)
+        return min(0.99, os.path.getsize(newest) / total)
+    except OSError:
+        return None
+
 
 # Cached model sessions + load state.
 _SESSIONS: dict[str, object] = {}
@@ -265,15 +307,26 @@ async def models():
         "available": AVAILABLE_MODELS,
         "sizes_mb": MODEL_SIZES_MB,
         "info": MODEL_INFO,
+        "downloaded": {name: is_downloaded(name) for name in AVAILABLE_MODELS},
     }
 
 
 @app.get("/model_status")
 async def model_status(model: str = DEFAULT_MODEL):
     _check_model(model)
+    state = state_of(model)
+    downloaded = is_downloaded(model)
+    if state == "loading":
+        progress = download_progress(model)
+    elif state == "ready" or downloaded:
+        progress = 1.0
+    else:
+        progress = 0.0
     return {
         "model": model,
-        "state": state_of(model),
+        "state": state,
+        "downloaded": downloaded,
+        "progress": progress,
         "size_mb": MODEL_SIZES_MB.get(model),
         "error": _MODEL_ERROR.get(model),
     }

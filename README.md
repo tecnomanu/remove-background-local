@@ -9,9 +9,15 @@ It ships with **ISNet** as the default (fast and high quality) and also includes
 - Web UI with drag & drop (paste from clipboard works too)
 - **Processing queue** — drop several images at once and they are processed one
   by one; each result is kept in its own card, nothing gets overwritten
-- **First-run setup screen** — the first time it opens it tells you the model is
-  downloading (it is a one-time download) instead of leaving you guessing
-- **Models page** in the top menu explaining what each model is best for
+- **Persistent sessions** — results are saved locally (in the browser) and
+  grouped into sessions in the sidebar; they survive reloads until you delete
+  them. "New session" starts a fresh batch without losing the old ones
+- **Download as PNG, WEBP or JPG**, with the background you choose (transparent
+  or a solid color) — per image or all at once
+- **Per-result background** to check contrast, independent of the global default
+- **First-run setup screen** with a real download progress bar
+- **Models page** in the top menu: what each model is best for, which ones are
+  downloaded, and a button to pre-download any of them (with progress)
 - Switch between 6 models depending on the case (general, portrait, lite, etc.)
 - Alpha matting mode for fine edges (hair, plants)
 - 100% local processing — your images never leave your machine

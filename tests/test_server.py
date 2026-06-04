@@ -37,17 +37,21 @@ def test_models_payload(client):
     assert data["default"] == server.DEFAULT_MODEL
     assert set(data["available"]) == set(server.AVAILABLE_MODELS)
     assert set(data["info"]) == set(server.AVAILABLE_MODELS)
+    assert set(data["downloaded"]) == set(server.AVAILABLE_MODELS)
     # every model must expose complete, non-empty info for the Models page
     for key, info in data["info"].items():
-        for field in ("title", "speed", "quality", "best_for", "description"):
+        for field in ("title", "tagline", "speed", "quality", "best_for", "description"):
             assert info.get(field), f"{key} missing {field}"
         assert key in data["sizes_mb"]
+        assert isinstance(data["downloaded"][key], bool)
 
 
 def test_model_status_default(client):
     data = client.get("/model_status").json()
     assert data["model"] == server.DEFAULT_MODEL
     assert data["state"] in ("idle", "loading", "ready")
+    assert isinstance(data["downloaded"], bool)
+    assert data["progress"] is None or 0.0 <= data["progress"] <= 1.0
 
 
 def test_model_status_unknown_is_400(client):
@@ -118,3 +122,13 @@ def test_warmup_returns_state(client, monkeypatch):
 def test_providers_default_is_cpu():
     # Reliability guard: CoreML hangs on some models on Apple Silicon.
     assert server.PROVIDERS, "at least one execution provider must be configured"
+
+
+def test_download_progress_helpers(monkeypatch):
+    # A downloaded model reports full progress; helpers must not raise.
+    monkeypatch.setattr(server, "is_downloaded", lambda name: True)
+    assert server.download_progress(server.DEFAULT_MODEL) == 1.0
+    monkeypatch.setattr(server, "is_downloaded", lambda name: False)
+    monkeypatch.setattr(server, "U2NET_HOME", "/nonexistent-dir-for-tests")
+    # No cache dir / no temp files -> 0.0, never an exception.
+    assert server.download_progress(server.DEFAULT_MODEL) == 0.0

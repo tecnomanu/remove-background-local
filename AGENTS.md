@@ -73,7 +73,35 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
   card) and server-side (the inference lock). Adding an image while another is
   processing must never overwrite an existing result.
 - **First-run setup overlay** in the UI polls `/model_status` and shows the
-  one-time model download with an elapsed timer instead of an endless spinner.
+  one-time model download with a real progress bar (computed server-side from
+  the size of the partial `tmp*` file in `~/.u2net/` vs the expected size).
+- **`/model_status` reports `downloaded` and `progress`**; `/models` includes a
+  `downloaded` map and a `tagline` per model. The Models page and the model
+  dropdown use these to show which models are on disk and to drive the
+  per-model Download buttons with progress.
+
+## Frontend state & persistence (static/index.html)
+
+- **Sessions persist** in IndexedDB (DB `removebg-local`, store `results`),
+  including the input and output image Blobs. They survive reloads and last
+  until the user deletes them. Only completed results are persisted.
+- A **session** is a group of results. The sidebar lists sessions (newest
+  first), each showing its individual images. "New session" starts a fresh
+  current session without deleting the others. On load, the most recent session
+  is continued.
+- The results pane shows the **viewed session**; clicking a sidebar image or
+  session header switches the view. Per-card close (x) hides a card from view
+  (it stays in the sidebar); per-image and per-session trash buttons delete.
+- **Result background**: there is a global default picker and an independent
+  per-card picker. Changing a card's background only affects that card
+  (`job.bg`); the global picker is the default for cards that haven't been
+  overridden (`effectiveBg = job.bg ?? resultBg`).
+- **Downloads** are produced client-side via canvas in PNG / WEBP / JPG, baking
+  in the chosen background (JPG always gets a solid background since it has no
+  alpha). "Download all" exports every done result in the viewed session.
+- The **model selector** is a custom shadcn-style dropdown (not a native
+  `<select>`) showing each model's title, size, a muted tagline, and a
+  downloaded indicator dot.
 
 ## HTTP API
 
