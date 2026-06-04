@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.5.0 — Grouped sessions & friendlier empty state
+
+- Sidebar groups images by session; click a session to open it whole
+- Reload starts an empty working session; past sessions stay saved
+- Lost-puppy empty state and a README screenshot
+- Card footer laid out cleanly: background / model / download
 ## v1.4.0 — Compact controls, close all & rename
 
 - Compact top row: model on one side, actions on the other
