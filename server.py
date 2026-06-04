@@ -278,7 +278,7 @@ async def ensure_session(model_name: str):
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="remove-background-local", version="1.6.0")
+app = FastAPI(title="remove-background-local", version="1.7.0")
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -445,7 +445,56 @@ async def remove_background(
 # Entrypoint
 # ---------------------------------------------------------------------------
 
+def _arg_model(rest):
+    for i, a in enumerate(rest):
+        if a in ("--model", "-m") and i + 1 < len(rest):
+            return rest[i + 1]
+    for a in rest:
+        if not a.startswith("-"):
+            return a
+    return None
+
+
+def _models_cli(args) -> int:
+    """`python server.py models [ls|pull|rm] ...` — manage cached models."""
+    sub = args[0] if args else "ls"
+    if sub in ("ls", "show", "list"):
+        print("Models (cache: %s)" % U2NET_HOME)
+        for name in AVAILABLE_MODELS:
+            mark = "*" if is_downloaded(name) else " "
+            state = "downloaded" if is_downloaded(name) else "not downloaded"
+            default = "  (default)" if name == DEFAULT_MODEL else ""
+            print(f" {mark} {name:<22} {MODEL_SIZES_MB.get(name, 0):>4} MB   {state}{default}")
+        return 0
+    if sub == "pull":
+        model = _arg_model(args[1:]) or DEFAULT_MODEL
+        if model not in AVAILABLE_MODELS:
+            print(f"Unknown model: {model}"); return 1
+        print(f"Downloading {model} (~{MODEL_SIZES_MB.get(model, 0)} MB)...")
+        new_session(model, providers=PROVIDERS)
+        print("Done.")
+        return 0
+    if sub in ("rm", "remove", "delete"):
+        model = _arg_model(args[1:])
+        if not model or model not in AVAILABLE_MODELS:
+            print("Usage: models rm --model <name>"); return 1
+        path = model_file(model)
+        if os.path.isfile(path):
+            os.remove(path); print(f"Deleted {model}")
+        else:
+            print(f"{model} is not downloaded")
+        return 0
+    print("Usage: models [ls | pull --model <name> | rm --model <name>]")
+    return 1
+
+
 def main():
+    import sys
+
+    argv = sys.argv[1:]
+    if argv and argv[0] == "models":
+        raise SystemExit(_models_cli(argv[1:]))
+
     import uvicorn
 
     host = os.environ.get("HOST", "127.0.0.1")

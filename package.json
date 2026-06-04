@@ -1,15 +1,17 @@
 {
   "name": "remove-background-local",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Remove image backgrounds locally — FastAPI + rembg (ISNet/BiRefNet), drag & drop web UI, 100% offline. Unofficial, not affiliated with remove.bg.",
   "bin": {
-    "remove-background-local": "bin/cli.js"
+    "remove-background-local": "bin/cli.js",
+    "rm-bg": "bin/cli.js"
   },
   "scripts": {
     "start": "node bin/cli.js"
   },
   "files": [
     "bin/",
+    "electron/",
     "server.py",
     "requirements.txt",
     "run.sh",

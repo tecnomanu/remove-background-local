@@ -81,6 +81,26 @@ Open in your browser: **http://127.0.0.1:7860**
 
 > **Moved the folder?** A Python virtualenv stores absolute paths, so a copied/moved `.venv` is broken. `run.sh` detects this automatically and rebuilds the environment — you don't have to do anything.
 
+## Commands (`rm-bg`)
+
+When installed via npm (globally or with `npx`), you get the `rm-bg` command:
+
+```bash
+rm-bg web                     # start the web server (foreground)
+rm-bg start                   # start it in the background
+rm-bg stop                    # stop the background server
+rm-bg init                    # set up and download the default model
+rm-bg desktop                 # open as a desktop app (Electron)
+rm-bg models ls               # list models and which are downloaded
+rm-bg models pull --model birefnet-general   # download a model
+rm-bg models rm   --model birefnet-general   # delete a downloaded model
+rm-bg update                  # update to the latest version
+rm-bg help                    # show all commands
+```
+
+> **Desktop app:** `rm-bg desktop` shows the exact same UI in a native window.
+> The first run downloads Electron once into `~/.remove-background-local`.
+
 ## Usage
 
 1. Drag one or more images onto the box (or click to choose, or paste with Cmd+V)

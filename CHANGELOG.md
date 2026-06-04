@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.7.0 — rm-bg CLI & desktop app
+
+- `rm-bg` command with subcommands: web, start, stop, init, desktop, models (ls/pull/rm), update
+- Desktop app via Electron (`rm-bg desktop`) showing the same UI in a native window
+- `python server.py models ls|pull|rm` backend CLI
+
 ## v1.6.0 — Manage models & npx launcher
 
 - Delete downloaded models from disk on the Models page
