@@ -1,8 +1,8 @@
 name: release-please
 
 # Watches Conventional Commits on main and opens/maintains a "release PR" that
-# bumps the version in package.json and updates CHANGELOG.md. Merging that PR
-# creates the GitHub Release + tag, which fires publish.yml -> npm publish.
+# bumps package.json + CHANGELOG.md. Merging that PR creates the GitHub Release
+# and publishes to npm — all in this one workflow.
 #
 #   fix:            -> patch (x.y.Z)
 #   feat:           -> minor (x.Y.0)
@@ -19,6 +19,23 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - id: release
+        uses: googleapis/release-please-action@v4
         with:
           release-type: node
+
+      # When a release was just created, publish it to npm (a release created by
+      # the Actions token does not trigger the separate publish workflow, so we
+      # publish here directly). Needs the NPM_TOKEN repo secret (Automation token).
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+      - uses: actions/setup-node@v4
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Publish to npm
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
