@@ -379,6 +379,7 @@ Usage:
   rm-bg models pull --model X   Download a model
   rm-bg models rm   --model X   Delete a downloaded model
   rm-bg update                  Update to the latest version
+  rm-bg version                 Print the installed version
   rm-bg help                    Show this help
 
 Env: HOST (default 127.0.0.1), PORT (default 7860)
@@ -397,6 +398,7 @@ function main() {
     case "desktop": case "app": return cmdDesktop(rest);
     case "models": case "model": return cmdModels(rest);
     case "update": case "upgrade": return cmdUpdate();
+    case "version": case "--version": case "-v": return void process.stdout.write((currentVersion() || "unknown") + "\n");
     case "help": case "-h": case "--help": return cmdHelp();
     default:
       err(`Unknown command: ${cmd}\n`); cmdHelp(); process.exit(1);
