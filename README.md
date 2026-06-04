@@ -1,6 +1,10 @@
-![Remove Background in Local](docs/screenshot.webp)
+<p align="center">
+  <img src="static/logo.png" alt="Remove Background in Local logo" width="120" />
+</p>
 
-# Remove Background in Local
+<h1 align="center">Remove Background in Local</h1>
+
+![Remove Background in Local](docs/screenshot.webp)
 
 A fast, private background-removal tool that runs entirely on your own machine.
 
