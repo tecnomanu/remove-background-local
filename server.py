@@ -288,7 +288,8 @@ async def root():
     index = STATIC_DIR / "index.html"
     if not index.exists():
         return JSONResponse({"error": "static/index.html not found"}, status_code=500)
-    return FileResponse(str(index))
+    # Never cache the UI shell, so a reload always serves the latest version.
+    return FileResponse(str(index), headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
 @app.get("/health")

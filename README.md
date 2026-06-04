@@ -1,8 +1,14 @@
-# remove-bg-local
+# remove.background local
 
-Your own remove.bg running on localhost. No limits, no uploading your images to anyone's server, no paying for an API.
+A fast, private background-removal tool that runs entirely on your own machine.
 
-It ships with **ISNet** as the default (fast and high quality) and also includes **BiRefNet** (2024) — one of the best open-source models for background segmentation, with quality very close to remove.bg — for when you want maximum quality.
+> Unofficial open-source project. Not affiliated with remove.bg or Canva Austria GmbH.
+
+An offline alternative for people who want a workflow similar to cloud
+background-removal services such as remove.bg, without uploading images or
+paying API costs. Everything runs locally — no limits, no account, no API.
+
+It ships with **ISNet** as the default (fast and high quality) and also includes **BiRefNet** (2024) — one of the best open-source models for background segmentation — for when you want maximum quality.
 
 ## Features
 

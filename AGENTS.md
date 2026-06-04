@@ -82,26 +82,34 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
 
 ## Frontend state & persistence (static/index.html)
 
-- **Sessions persist** in IndexedDB (DB `removebg-local`, store `results`),
-  including the input and output image Blobs. They survive reloads and last
-  until the user deletes them. Only completed results are persisted.
-- A **session** is a group of results. The sidebar lists sessions (newest
-  first), each showing its individual images. "New session" starts a fresh
-  current session without deleting the others. On load, the most recent session
-  is continued.
-- The results pane shows the **viewed session**; clicking a sidebar image or
-  session header switches the view. Per-card close (x) hides a card from view
-  (it stays in the sidebar); per-image and per-session trash buttons delete.
-- **Result background**: there is a global default picker and an independent
-  per-card picker. Changing a card's background only affects that card
-  (`job.bg`); the global picker is the default for cards that haven't been
-  overridden (`effectiveBg = job.bg ?? resultBg`).
+- **Single session** model: the sidebar shows the processed images of the
+  current session (a flat list). They **persist in IndexedDB** (DB
+  `removebg-local`, store `results`, input + output Blobs) so a reload never
+  loses work. "Clear" wipes the session (jobs + IndexedDB). Per-image trash
+  deletes one; per-card close (x) only hides a card from the results view.
+- The root (`/`) is served with `Cache-Control: no-cache` so a reload always
+  gets the latest UI (avoids stale cached versions).
+- **Result background**: a global default picker plus an independent per-card
+  picker. Changing a card only affects that card (`job.bg`); the global is the
+  default for non-overridden cards (`effectiveBg = job.bg ?? resultBg`).
+- **Each result card** shows the model it used and a human-readable
+  "processed X ago" time, plus a Model selector + Reprocess button (Reprocess
+  confirms, then re-runs that image with the chosen model, replacing the old
+  result).
 - **Downloads** are produced client-side via canvas in PNG / WEBP / JPG, baking
   in the chosen background (JPG always gets a solid background since it has no
-  alpha). "Download all" exports every done result in the viewed session.
+  alpha). "Download all" exports every done result.
 - The **model selector** is a custom shadcn-style dropdown (not a native
   `<select>`) showing each model's title, size, a muted tagline, and a
   downloaded indicator dot.
+
+## Naming / legal
+
+- The product name in the UI and README is **remove.background local** (the
+  repo / package slug stays `remove-bg-local`). Do NOT use the "remove.bg"
+  wordmark as the product name or imitate their visual identity. remove.bg may
+  be mentioned only as a contextual comparison, alongside the disclaimer that
+  this is an unofficial project, not affiliated with remove.bg / Canva.
 
 ## HTTP API
 
