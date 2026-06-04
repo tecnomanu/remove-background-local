@@ -7,10 +7,19 @@ const { app, BrowserWindow, shell, nativeImage } = require("electron");
 const { spawn } = require("child_process");
 const http = require("http");
 const path = require("path");
+const fs = require("fs");
+const os = require("os");
 
 const APP_NAME = "Remove Background Local";
-const PY = process.env.RBL_PY || "python3";
-const APP_DIR = process.env.RBL_APP || path.join(__dirname, "..");
+// When launched by `rm-bg desktop` these come from the environment. When running
+// as a packaged .app they are not set, so fall back to the bundled files
+// (next to this script) and the venv created under the user's home.
+const APP_DIR = process.env.RBL_APP || __dirname;
+const DEFAULT_VENV_PY = path.join(
+  os.homedir(), ".remove-background-local", "venv",
+  process.platform === "win32" ? "Scripts\\python.exe" : "bin/python"
+);
+const PY = process.env.RBL_PY || (fs.existsSync(DEFAULT_VENV_PY) ? DEFAULT_VENV_PY : "python3");
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || "7860";
 const URL = `http://${HOST}:${PORT}`;
@@ -72,7 +81,8 @@ async function createWindow() {
 }
 
 app.whenReady().then(async () => {
-  if (process.platform === "darwin" && app.dock) {
+  // In a packaged .app the bundle's .icns is used; only override in dev mode.
+  if (process.platform === "darwin" && app.dock && !app.isPackaged) {
     try { app.dock.setIcon(nativeImage.createFromPath(ICON)); } catch (e) { /* ignore */ }
   }
   if (!(await isUp())) startServer();

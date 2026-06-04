@@ -121,6 +121,21 @@ The first run downloads the Electron runtime once into `~/.remove-background-loc
 (it is not bundled, to keep the base install small). Everything else — models,
 sessions, privacy — works exactly like the web version.
 
+**Install it as a real Mac app (macOS):**
+
+```bash
+rm-bg desktop install      # builds "Remove Background Local.app" into /Applications
+rm-bg desktop uninstall    # removes it
+```
+
+This creates a proper `Remove Background Local.app` (its own name, icon and bundle
+id) that you can open from Launchpad or the Applications folder like any other app.
+It is built locally on your machine, so there is no Gatekeeper warning. It still
+uses the Python environment under `~/.remove-background-local/`, so keep that in
+place (or run `rm-bg init` to recreate it). A signed, notarized installer for
+distributing to other people would need an Apple Developer account — out of scope
+for now.
+
 ## Usage
 
 1. Drag one or more images onto the box (or click to choose, or paste with Cmd+V)

@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.8.0 — Install as a Mac app
+
+- `rm-bg desktop install` builds a real `Remove Background Local.app` into
+  /Applications (own name, icon and bundle id); `rm-bg desktop uninstall` removes it
+- Built locally from the cached Electron runtime, so no Gatekeeper prompt
+- App bundle ships the SVG-derived `.icns` icon
+
 ## v1.7.1 — App icon & title
 
 - Real-transparency SVG logos (logo-dark / logo-white) + PNGs, used as favicon and app/dock icon

@@ -143,8 +143,9 @@ function cmdUpdate() {
   const r = run(IS_WIN ? "npm.cmd" : "npm", ["install", "-g", "remove-background-local@latest"]);
   if (r.status !== 0) err("Update failed. If you run it with npx, just use `npx -y remove-background-local@latest`.");
 }
-function cmdDesktop() {
-  ensureSetup();
+function pkgVersion() { try { return require(path.join(APP_DIR, "package.json")).version || "0.0.0"; } catch { return "0.0.0"; } }
+
+function ensureElectron() {
   const desktopDir = path.join(HOME, "desktop");
   const electronBin = path.join(desktopDir, "node_modules", ".bin", IS_WIN ? "electron.cmd" : "electron");
   if (!fs.existsSync(electronBin)) {
@@ -156,17 +157,26 @@ function cmdDesktop() {
     const r = run(IS_WIN ? "npm.cmd" : "npm", ["install", "electron@latest"], { cwd: desktopDir });
     if (r.status !== 0 || !fs.existsSync(electronBin)) { err("Could not install Electron. You can still use `rm-bg web`."); process.exit(1); }
   }
-  // macOS shows the app menu name from the Electron bundle's Info.plist
-  // (app.setName can't change it without packaging). Patch it so the menu bar
-  // reads "Remove Background Local" instead of "Electron". Idempotent.
+  return { desktopDir, electronBin };
+}
+
+function patchPlistName(plist) {
+  if (!fs.existsSync(plist)) return;
+  spawnSync("plutil", ["-replace", "CFBundleName", "-string", APP_NAME, plist]);
+  spawnSync("plutil", ["-replace", "CFBundleDisplayName", "-string", APP_NAME, plist]);
+}
+
+function cmdDesktop(rest) {
+  const sub = (rest[0] || "").toLowerCase();
+  if (sub === "install") return cmdDesktopInstall();
+  if (sub === "uninstall") return cmdDesktopUninstall();
+
+  ensureSetup();
+  const { desktopDir, electronBin } = ensureElectron();
   if (process.platform === "darwin") {
     const appBundle = path.join(desktopDir, "node_modules", "electron", "dist", "Electron.app");
-    const plist = path.join(appBundle, "Contents", "Info.plist");
-    if (fs.existsSync(plist)) {
-      spawnSync("plutil", ["-replace", "CFBundleName", "-string", APP_NAME, plist]);
-      spawnSync("plutil", ["-replace", "CFBundleDisplayName", "-string", APP_NAME, plist]);
-      try { fs.utimesSync(appBundle, new Date(), new Date()); } catch {}
-    }
+    patchPlistName(path.join(appBundle, "Contents", "Info.plist"));
+    try { fs.utimesSync(appBundle, new Date(), new Date()); } catch {}
   }
   log("Opening desktop app...");
   const child = spawn(electronBin, [path.join(APP_DIR, "electron", "main.js")], {
@@ -174,6 +184,60 @@ function cmdDesktop() {
     env: Object.assign({}, process.env, { RBL_PY: VENV_PY, RBL_APP: APP_DIR, HOST, PORT }),
   });
   child.on("exit", (code) => process.exit(code || 0));
+}
+
+function appInstallDir() {
+  let dir = "/Applications";
+  try { fs.accessSync(dir, fs.constants.W_OK); } catch { dir = path.join(os.homedir(), "Applications"); fs.mkdirSync(dir, { recursive: true }); }
+  return dir;
+}
+
+function cmdDesktopInstall() {
+  if (process.platform !== "darwin") {
+    err("`rm-bg desktop install` is currently macOS-only. On this OS use `rm-bg desktop`."); process.exit(1);
+  }
+  ensureSetup();
+  const { desktopDir } = ensureElectron();
+  const srcApp = path.join(desktopDir, "node_modules", "electron", "dist", "Electron.app");
+  if (!fs.existsSync(srcApp)) { err("Electron runtime not found."); process.exit(1); }
+
+  const destApp = path.join(appInstallDir(), "Remove Background Local.app");
+  log(`Building ${path.basename(destApp)} ...`);
+  run("rm", ["-rf", destApp]);
+  if (run("cp", ["-R", srcApp, destApp]).status !== 0) { err("Copy failed."); process.exit(1); }
+
+  // Inject our app into the bundle (Electron loads Contents/Resources/app).
+  const resApp = path.join(destApp, "Contents", "Resources", "app");
+  fs.mkdirSync(resApp, { recursive: true });
+  run("cp", [path.join(APP_DIR, "electron", "main.js"), path.join(resApp, "main.js")]);
+  run("cp", [path.join(APP_DIR, "server.py"), path.join(resApp, "server.py")]);
+  run("cp", [path.join(APP_DIR, "requirements.txt"), path.join(resApp, "requirements.txt")]);
+  run("cp", ["-R", path.join(APP_DIR, "static"), path.join(resApp, "static")]);
+  fs.writeFileSync(path.join(resApp, "package.json"), JSON.stringify(
+    { name: "remove-background-local", productName: APP_NAME, version: pkgVersion(), main: "main.js" }, null, 2));
+
+  // Icon + name.
+  const icns = path.join(APP_DIR, "static", "app-icon.icns");
+  if (fs.existsSync(icns)) run("cp", [icns, path.join(destApp, "Contents", "Resources", "electron.icns")]);
+  const plist = path.join(destApp, "Contents", "Info.plist");
+  patchPlistName(plist);
+  spawnSync("plutil", ["-replace", "CFBundleIdentifier", "-string", "app.removebackground.local", plist]);
+
+  try { fs.utimesSync(destApp, new Date(), new Date()); } catch {}
+  spawnSync("/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister", ["-f", destApp]);
+
+  log(`Installed: ${destApp}`);
+  log("Opening it now. You'll also find it in Launchpad / Applications.");
+  run("open", [destApp]);
+}
+
+function cmdDesktopUninstall() {
+  let removed = false;
+  for (const base of ["/Applications", path.join(os.homedir(), "Applications")]) {
+    const a = path.join(base, "Remove Background Local.app");
+    if (fs.existsSync(a)) { run("rm", ["-rf", a]); removed = true; log("Removed " + a); }
+  }
+  if (!removed) log("No installed app found.");
 }
 function cmdHelp() {
   process.stdout.write(`
@@ -185,6 +249,8 @@ Usage:
   rm-bg stop                    Stop the background server
   rm-bg init                    Set up and download the default model
   rm-bg desktop                 Open as a desktop app (Electron)
+  rm-bg desktop install         Install it as a real Mac app in /Applications
+  rm-bg desktop uninstall       Remove the installed Mac app
   rm-bg models ls               List models and which are downloaded
   rm-bg models pull --model X   Download a model
   rm-bg models rm   --model X   Delete a downloaded model
@@ -204,7 +270,7 @@ function main() {
     case "start": case "up": return void cmdStart();
     case "stop": case "down": return cmdStop();
     case "init": case "setup": return cmdInit();
-    case "desktop": case "app": return cmdDesktop();
+    case "desktop": case "app": return cmdDesktop(rest);
     case "models": case "model": return cmdModels(rest);
     case "update": case "upgrade": return cmdUpdate();
     case "help": case "-h": case "--help": return cmdHelp();
