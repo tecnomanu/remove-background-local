@@ -8,6 +8,8 @@ An offline alternative for people who want a workflow similar to cloud
 background-removal services such as remove.bg, without uploading images or
 paying API costs. Everything runs locally — no limits, no account, no API.
 
+![rm.background local](docs/screenshot.webp)
+
 It ships with **ISNet** as the default (fast and high quality) and also includes **BiRefNet** (2024) — one of the best open-source models for background segmentation — for when you want maximum quality.
 
 ## Features
