@@ -142,6 +142,12 @@ All of them launch the same desktop window and use the Python environment under
 signed/notarized installer for distributing to other people would need a platform
 developer account — out of scope for now.
 
+**Updating the installed app:** `rm-bg update` updates the npm package and then
+refreshes the installed desktop app automatically. On Linux/Windows the launcher
+points at the npm package, so it is current after any `npm install -g
+remove-background-local@latest`; on macOS the `.app` bundles a copy of the code,
+so it is rebuilt (run `rm-bg desktop install` if you updated npm by hand).
+
 ## Usage
 
 1. Drag one or more images onto the box (or click to choose, or paste with Cmd+V)

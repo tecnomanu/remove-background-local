@@ -23,7 +23,7 @@ const PY = process.env.RBL_PY || (fs.existsSync(DEFAULT_VENV_PY) ? DEFAULT_VENV_
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = process.env.PORT || "7860";
 const URL = `http://${HOST}:${PORT}`;
-const ICON = path.join(APP_DIR, "static", "logo-dark.png");
+const ICON = path.join(APP_DIR, "static", "logo.png");
 
 app.setName(APP_NAME);
 

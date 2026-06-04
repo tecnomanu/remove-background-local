@@ -138,10 +138,30 @@ function cmdModels(rest) {
   const r = run(VENV_PY, [path.join(APP_DIR, "server.py"), "models", ...rest]);
   process.exit(r.status || 0);
 }
+function desktopInstalled() {
+  if (process.platform === "darwin")
+    return ["/Applications", path.join(os.homedir(), "Applications")]
+      .some((b) => fs.existsSync(path.join(b, "Remove Background Local.app")));
+  if (process.platform === "linux")
+    return fs.existsSync(path.join(os.homedir(), ".local", "share", "applications", "remove-background-local.desktop"));
+  if (process.platform === "win32")
+    return fs.existsSync(path.join(process.env.APPDATA || os.homedir(), "Microsoft", "Windows", "Start Menu", "Programs", "Remove Background Local.lnk"));
+  return false;
+}
+
 function cmdUpdate() {
   log("Updating remove-background-local from npm...");
   const r = run(IS_WIN ? "npm.cmd" : "npm", ["install", "-g", "remove-background-local@latest"]);
-  if (r.status !== 0) err("Update failed. If you run it with npx, just use `npx -y remove-background-local@latest`.");
+  if (r.status !== 0) { err("Update failed. If you run it with npx, just use `npx -y remove-background-local@latest`."); return; }
+  log("Updated to the latest version.");
+  // If the desktop app/shortcut is installed, refresh it so it runs the new code.
+  // (On Linux/Windows the launcher points at the npm package and is already
+  //  current; on macOS the .app bundles a copy, so it is rebuilt.)
+  if (desktopInstalled()) {
+    log("Refreshing the installed desktop app...");
+    const ri = run(IS_WIN ? "rm-bg.cmd" : "rm-bg", ["desktop", "install"]);
+    if (ri.status !== 0) log("Could not refresh automatically — run `rm-bg desktop install` to update the app.");
+  }
 }
 function pkgVersion() { try { return require(path.join(APP_DIR, "package.json")).version || "0.0.0"; } catch { return "0.0.0"; } }
 

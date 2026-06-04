@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.10.0 — New logo & auto-refresh on update
+
+- New single brand logo (the rm. squircle) used as favicon and app/dock icon;
+  removed the dark/light variants
+- `rm-bg update` now refreshes the installed desktop app after updating npm
+  (macOS rebuilds the .app; Linux/Windows launchers already point at the package)
+
 ## v1.9.0 — Cross-platform install
 
 - `rm-bg desktop install` now works on Linux (.desktop launcher) and Windows
