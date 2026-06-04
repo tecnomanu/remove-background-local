@@ -4,6 +4,12 @@
 
 <h1 align="center">Remove Background in Local</h1>
 
+<p align="center">
+  <a href="https://tecnomanu.github.io/remove-background-local/"><b>🌐 Sitio web</b></a> ·
+  <a href="https://www.npmjs.com/package/remove-background-local">npm</a> ·
+  <a href="#install-and-run">Instalar</a>
+</p>
+
 ![Remove Background in Local](docs/screenshot.webp)
 
 A fast, private background-removal tool that runs entirely on your own machine.

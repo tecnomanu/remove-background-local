@@ -24,6 +24,7 @@ package-lock.json
 Thumbs.db
 .idea/
 .vscode/
+.claude/
 
 # Local outputs / scratch
 *_nobg.png
