@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.12.0 — Port-in-use handling, auto-update on open, clearer docs
+
+- If the server is already running, `rm-bg web`/`start` now point you to the
+  URL instead of crashing with "address already in use"; clearer message when
+  the port is taken by another app (server.py also checks before binding)
+- `rm-bg web`/`desktop` check npm for a newer version on launch and update in
+  place before starting (set RBL_NO_UPDATE=1 to skip)
+- README: clearer npx (temporary) vs npm install -g (permanent) explanation
+
 ## v1.11.0 — npm publish
 
 - First version published to npm (auto-published from the GitHub release via the

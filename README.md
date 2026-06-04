@@ -49,26 +49,31 @@ If you don't, install it from [python.org](https://www.python.org/downloads/) or
 
 ## Install and run
 
-### Option A — one command (npx)
+Needs Node.js and Python 3.9+ already installed (Node can't install Python for you).
 
-If you have Node.js and Python 3.9+ installed:
-
-```bash
-npx -y remove-background-local
-```
-
-This bootstraps a Python environment, installs the dependencies and starts the
-server — then opens **http://127.0.0.1:7860** in your browser. (Node can't install
-Python itself, so Python 3.9+ must already be available.)
-
-Install it globally to get the `rm-bg` command everywhere, including the desktop app:
+### Option A — just try it (npx, temporary)
 
 ```bash
-npm install -g remove-background-local
-rm-bg desktop     # native window, or: rm-bg web
+npx -y remove-background-local        # runs the web app right now
 ```
 
-### Option B — from source
+`npx` downloads the package **temporarily**, runs it, and opens
+**http://127.0.0.1:7860**. It does **not** leave a command installed — good for a
+quick try. (For the desktop window: `npx -y remove-background-local desktop`.)
+
+### Option B — install it (npm, permanent + the `rm-bg` command)
+
+```bash
+npm install -g remove-background-local   # installs the `rm-bg` command everywhere
+rm-bg web                                # then run it whenever you want
+rm-bg desktop                            # ...or as a native window
+```
+
+This is the recommended way for regular use and the desktop app. Update later with
+`rm-bg update`. (`npm install -g` only **installs** — it doesn't start anything;
+you run `rm-bg ...` afterwards.)
+
+### Option C — from source
 
 ```bash
 git clone https://github.com/tecnomanu/remove-background-local

@@ -278,7 +278,7 @@ async def ensure_session(model_name: str):
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="remove-background-local", version="1.11.0")
+app = FastAPI(title="remove-background-local", version="1.12.0")
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -495,10 +495,23 @@ def main():
     if argv and argv[0] == "models":
         raise SystemExit(_models_cli(argv[1:]))
 
+    import socket
     import uvicorn
 
     host = os.environ.get("HOST", "127.0.0.1")
     port = int(os.environ.get("PORT", "7860"))
+
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    probe.settimeout(0.5)
+    in_use = probe.connect_ex((host, port)) == 0
+    probe.close()
+    if in_use:
+        log.error(
+            "Port %d is already in use. If remove-bg-local is already running, "
+            "open http://%s:%d in your browser. Otherwise free the port or set a "
+            "different one, e.g. PORT=8000.", port, host, port,
+        )
+        raise SystemExit(1)
 
     log.info("=" * 60)
     log.info("remove-bg-local starting on http://%s:%d", host, port)

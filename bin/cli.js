@@ -23,6 +23,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const http = require("http");
+const net = require("net");
 
 const APP_DIR = path.join(__dirname, "..");
 const HOME = process.env.RBL_HOME || path.join(os.homedir(), ".remove-background-local");
@@ -92,12 +93,46 @@ async function waitUp(timeoutMs) {
   while (Date.now() - t0 < (timeoutMs || 120000)) { if (await isUp()) return true; await new Promise(r => setTimeout(r, 800)); }
   return false;
 }
+function portInUse() {
+  return new Promise((res) => {
+    const s = net.connect({ host: HOST, port: Number(PORT) }, () => { s.destroy(); res(true); });
+    s.on("error", () => res(false));
+    s.setTimeout(1000, () => { s.destroy(); res(false); });
+  });
+}
+
+// --- auto-update ---------------------------------------------------------
+function currentVersion() { try { return require(path.join(APP_DIR, "package.json")).version; } catch { return null; } }
+function semverGt(a, b) {
+  const pa = String(a).split(".").map(Number), pb = String(b).split(".").map(Number);
+  for (let i = 0; i < 3; i++) { if ((pa[i] || 0) > (pb[i] || 0)) return true; if ((pa[i] || 0) < (pb[i] || 0)) return false; }
+  return false;
+}
+// On launch, pull a newer published version (best-effort, offline-safe).
+// Updates the global package in place so the app we start uses the new code.
+function autoUpdateIfNewer() {
+  if (process.env.RBL_NO_UPDATE) return;
+  const cur = currentVersion(); if (!cur) return;
+  let latest = null;
+  try {
+    const r = spawnSync(IS_WIN ? "npm.cmd" : "npm", ["view", "remove-background-local", "version"], { encoding: "utf8", timeout: 7000 });
+    if (r.status === 0) latest = (r.stdout || "").trim();
+  } catch { return; }
+  if (!latest || !semverGt(latest, cur)) return;
+  log(`Updating ${cur} -> ${latest} (then launching the new version)...`);
+  // Updates the global package in place, so the app we launch next uses the new
+  // code. The installed standalone .app is refreshed separately by `rm-bg update`.
+  run(IS_WIN ? "npm.cmd" : "npm", ["install", "-g", "remove-background-local@latest"]);
+}
 function readPid() { try { return parseInt(fs.readFileSync(PID_FILE, "utf8").trim(), 10) || 0; } catch { return 0; } }
 function pidAlive(pid) { try { process.kill(pid, 0); return true; } catch { return false; } }
 
 // ---- commands ----
-function cmdWeb() {
+async function cmdWeb() {
+  if (await isUp()) { log(`Already running — open ${URL}`); openBrowser(URL); return; }
+  if (await portInUse()) { err(`Port ${PORT} is already in use by another app. Open ${URL} if that is this app, or start on another port, e.g.  PORT=8000 rm-bg web`); process.exit(1); }
   ensureSetup();
+  autoUpdateIfNewer();
   log(`Starting server on ${URL}`);
   log("(Ctrl+C to stop)");
   setTimeout(() => openBrowser(URL), 2500);
@@ -108,8 +143,10 @@ function cmdWeb() {
   process.on("SIGTERM", () => child.kill("SIGTERM"));
 }
 async function cmdStart() {
+  if (await isUp()) { log(`Already running — open ${URL}`); openBrowser(URL); return; }
   const pid = readPid();
   if (pid && pidAlive(pid)) { log(`Already running (pid ${pid}) on ${URL}`); return; }
+  if (await portInUse()) { err(`Port ${PORT} is in use by another app. Use a different PORT, e.g.  PORT=8000 rm-bg start`); process.exit(1); }
   ensureSetup();
   log("Starting server in the background...");
   const out = fs.openSync(LOG_FILE, "a");
@@ -192,6 +229,7 @@ function cmdDesktop(rest) {
   if (sub === "uninstall") return cmdDesktopUninstall();
 
   ensureSetup();
+  autoUpdateIfNewer();
   const { desktopDir, electronBin } = ensureElectron();
   if (process.platform === "darwin") {
     const appBundle = path.join(desktopDir, "node_modules", "electron", "dist", "Electron.app");
