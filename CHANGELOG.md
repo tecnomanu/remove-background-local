@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.6.0 — Manage models & npx launcher
+
+- Delete downloaded models from disk on the Models page
+- Model dropdown only lets you pick downloaded models; others shown disabled (no more dot)
+- npm/npx launcher: run with `npx -y remove-background-local`
+
 ## v1.5.0 — Grouped sessions & friendlier empty state
 
 - Sidebar groups images by session; click a session to open it whole

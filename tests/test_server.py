@@ -124,6 +124,29 @@ def test_providers_default_is_cpu():
     assert server.PROVIDERS, "at least one execution provider must be configured"
 
 
+def test_delete_model_unknown_is_400(client):
+    r = client.post("/delete_model", data={"model": "does-not-exist"})
+    assert r.status_code == 400
+
+
+def test_delete_model_removes_file(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(server, "U2NET_HOME", str(tmp_path))
+    name = server.DEFAULT_MODEL
+    (tmp_path / (name + ".onnx")).write_bytes(b"fake-model")
+    assert server.is_downloaded(name) is True
+    r = client.post("/delete_model", data={"model": name})
+    assert r.status_code == 200
+    assert r.json()["deleted"] is True
+    assert server.is_downloaded(name) is False
+
+
+def test_delete_model_not_downloaded_ok(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(server, "U2NET_HOME", str(tmp_path))
+    r = client.post("/delete_model", data={"model": server.DEFAULT_MODEL})
+    assert r.status_code == 200
+    assert r.json()["deleted"] is False
+
+
 def test_download_progress_helpers(monkeypatch):
     # A downloaded model reports full progress; helpers must not raise.
     monkeypatch.setattr(server, "is_downloaded", lambda name: True)

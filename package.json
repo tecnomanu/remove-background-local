@@ -1,0 +1,43 @@
+{
+  "name": "remove-background-local",
+  "version": "1.6.0",
+  "description": "Remove image backgrounds locally — FastAPI + rembg (ISNet/BiRefNet), drag & drop web UI, 100% offline. Unofficial, not affiliated with remove.bg.",
+  "bin": {
+    "remove-background-local": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "server.py",
+    "requirements.txt",
+    "run.sh",
+    "static/",
+    "AGENTS.md"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "keywords": [
+    "background-removal",
+    "remove-background",
+    "rembg",
+    "isnet",
+    "birefnet",
+    "image",
+    "local",
+    "offline",
+    "privacy"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tecnomanu/remove-background-local.git"
+  },
+  "homepage": "https://github.com/tecnomanu/remove-background-local",
+  "bugs": {
+    "url": "https://github.com/tecnomanu/remove-background-local/issues"
+  },
+  "author": "tecno.manu (Manuel Bruña)",
+  "license": "MIT"
+}

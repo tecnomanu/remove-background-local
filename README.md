@@ -47,7 +47,22 @@ If you don't, install it from [python.org](https://www.python.org/downloads/) or
 
 ## Install and run
 
+### Option A — one command (npx)
+
+If you have Node.js and Python 3.9+ installed:
+
 ```bash
+npx -y remove-background-local
+```
+
+This bootstraps a Python environment, installs the dependencies and starts the
+server — then opens **http://127.0.0.1:7860** in your browser. (Node can't install
+Python itself, so Python 3.9+ must already be available.)
+
+### Option B — from source
+
+```bash
+git clone https://github.com/tecnomanu/remove-background-local
 cd remove-background-local
 ./run.sh
 ```

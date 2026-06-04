@@ -15,6 +15,7 @@ Endpoints:
 - GET  /models       -> List of available models (with approx download sizes)
 - GET  /model_status -> Load state of a model (idle / loading / ready / error)
 - POST /warmup       -> Start loading a model in the background (non-blocking)
+- POST /delete_model -> Delete a model's cached file from disk
 - GET  /health       -> Server status
 
 Design notes:
@@ -277,7 +278,7 @@ async def ensure_session(model_name: str):
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="remove-background-local", version="1.5.0")
+app = FastAPI(title="remove-background-local", version="1.6.0")
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -348,6 +349,25 @@ async def warmup(model: str = Form(DEFAULT_MODEL)):
                 pass  # state already recorded in _MODEL_STATE / _MODEL_ERROR
         asyncio.create_task(_bg())
     return {"model": model, "state": state_of(model), "size_mb": MODEL_SIZES_MB.get(model)}
+
+
+@app.post("/delete_model")
+async def delete_model(model: str = Form(...)):
+    """Delete a model's cached .onnx file from disk and unload it from memory."""
+    _check_model(model)
+    _SESSIONS.pop(model, None)
+    _MODEL_STATE.pop(model, None)
+    _MODEL_ERROR.pop(model, None)
+    path = model_file(model)
+    removed = False
+    if os.path.isfile(path):
+        try:
+            os.remove(path)
+            removed = True
+            log.info("Deleted model %s (%s)", model, path)
+        except OSError as exc:
+            raise HTTPException(status_code=500, detail=f"Could not delete: {exc}")
+    return {"model": model, "deleted": removed, "downloaded": is_downloaded(model)}
 
 
 def _encode_png(out_img: Image.Image) -> bytes:

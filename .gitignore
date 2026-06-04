@@ -15,6 +15,10 @@ __pycache__/
 .u2net/
 *.onnx
 
+# Node (npm launcher)
+node_modules/
+package-lock.json
+
 # OS / editor
 .DS_Store
 Thumbs.db

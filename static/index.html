@@ -91,8 +91,9 @@
   .dd-opt .o-title { font-size: 13px; display: flex; align-items: center; gap: 8px; }
   .dd-opt .o-size { color: var(--text-dim); font-size: 11px; }
   .dd-opt .o-tag { color: var(--text-dim); font-size: 11px; margin-top: 1px; }
-  .dl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); flex: 0 0 auto; }
-  .dl-dot.on { background: var(--ok); }
+  .dd-opt .o-na { font-size: 10px; color: var(--warn); border: 1px solid var(--warn); border-radius: 999px; padding: 1px 6px; margin-left: 6px; }
+  .dd-opt.disabled { opacity: 0.5; cursor: not-allowed; }
+  .dd-opt.disabled:hover { background: transparent; }
   .dd-opt .o-check { color: var(--accent); flex: 0 0 auto; opacity: 0; }
   .dd-opt.sel .o-check { opacity: 1; }
 
@@ -171,8 +172,10 @@
   .model-card .facts { display: flex; gap: 22px; flex-wrap: wrap; align-items: flex-end; }
   .model-card .fact { font-size: 12px; }
   .model-card .fact b { color: var(--text-dim); font-weight: 500; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.04em; font-size: 10px; }
-  .model-card .dl { margin-left: auto; min-width: 180px; text-align: right; }
+  .model-card .dl { margin-left: auto; min-width: 180px; display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
   .badge-dl { font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--ok); color: var(--ok); }
+  .btn-del { background: transparent; border: 1px solid var(--border); color: var(--text-dim); border-radius: 8px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
+  .btn-del:hover { border-color: var(--err); color: var(--err); }
   .progress { height: 7px; background: var(--panel-2); border: 1px solid var(--border); border-radius: 999px; overflow: hidden; margin-top: 6px; }
   .progress > span { display: block; height: 100%; width: 0%; background: var(--accent); transition: width 0.3s; }
   .dl-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
@@ -293,7 +296,7 @@
 </div><!-- /app-main -->
 
 <footer class="app-footer">
-  <span class="ver">rm.background local <b id="ver">v1.5.0</b></span>
+  <span class="ver">rm.background local <b id="ver">v1.6.0</b></span>
   <span class="right">
     <span class="by">&copy; <b>tecno.manu</b> (Manuel Bruña)</span>
     <a class="cafe" href="https://cafecito.app/tecnomanu" target="_blank" rel="noopener">
@@ -394,10 +397,13 @@ function renderModelDropdown() {
   $("t-tag").textContent = info.tagline || "";
   const menu = $("model-menu"); menu.innerHTML = "";
   for (const [key, info2] of Object.entries(INFO)) {
+    const avail = !!DOWNLOADED[key];
     const opt = document.createElement("div");
-    opt.className = "dd-opt" + (key === selectedModel ? " sel" : "");
-    opt.innerHTML = `<span class="dl-dot ${DOWNLOADED[key] ? "on" : ""}" title="${DOWNLOADED[key] ? "Downloaded" : "Not downloaded"}"></span><span class="o-main"><span class="o-title">${info2.title}<span class="o-size">~${SIZES[key]} MB</span></span><span class="o-tag">${info2.tagline || ""}</span></span><span class="o-check">${ICON_CHECK}</span>`;
-    opt.addEventListener("click", () => { selectedModel = key; closeDropdown(); renderModelDropdown(); maybeWarm(key); });
+    opt.className = "dd-opt" + (key === selectedModel ? " sel" : "") + (avail ? "" : " disabled");
+    const na = avail ? "" : `<span class="o-na">Not downloaded</span>`;
+    opt.innerHTML = `<span class="o-main"><span class="o-title">${info2.title}<span class="o-size">~${SIZES[key]} MB</span>${na}</span><span class="o-tag">${info2.tagline || ""}</span></span><span class="o-check">${ICON_CHECK}</span>`;
+    if (avail) opt.addEventListener("click", () => { selectedModel = key; closeDropdown(); renderModelDropdown(); });
+    else opt.title = "Download it on the Models page first";
     menu.appendChild(opt);
   }
 }
@@ -420,14 +426,21 @@ function renderDlArea(key, statusObj) {
   const el = $("dl-" + key); if (!el) return;
   const downloaded = statusObj ? statusObj.downloaded : DOWNLOADED[key];
   const state = statusObj ? statusObj.state : null;
-  if (downloaded && state !== "loading") { el.innerHTML = `<span class="badge-dl">Downloaded</span>`; return; }
   if (state === "loading") {
     const pct = Math.round(((statusObj && statusObj.progress != null ? statusObj.progress : 0)) * 100);
     const label = (statusObj && statusObj.progress != null && statusObj.progress < 1) ? `Downloading ${pct}%` : "Initializing…";
     el.innerHTML = `<div class="progress"><span style="width:${pct}%"></span></div><div class="dl-label">${label}</div>`; return;
   }
-  const btn = document.createElement("button"); btn.textContent = "Download"; btn.addEventListener("click", () => downloadModelUI(key));
-  el.innerHTML = ""; el.appendChild(btn);
+  el.innerHTML = "";
+  if (downloaded) {
+    const badge = document.createElement("span"); badge.className = "badge-dl"; badge.textContent = "Downloaded";
+    const del = document.createElement("button"); del.className = "btn-del"; del.textContent = "Delete";
+    del.addEventListener("click", () => deleteModelUI(key));
+    el.appendChild(badge); el.appendChild(del);
+  } else {
+    const btn = document.createElement("button"); btn.textContent = "Download"; btn.addEventListener("click", () => downloadModelUI(key));
+    el.appendChild(btn);
+  }
 }
 async function downloadModelUI(key) {
   try {
@@ -435,6 +448,17 @@ async function downloadModelUI(key) {
     while (true) { const s = await getStatus(key); renderDlArea(key, s); if (s.state === "ready" || (s.downloaded && s.state !== "loading")) break; if (s.state === "error") throw new Error(s.error || "download failed"); await sleep(600); }
     DOWNLOADED[key] = true; renderDlArea(key); renderModelDropdown(); toast(`${INFO[key]?.title || key} downloaded`, "ok");
   } catch (e) { toast(e.message || "Download failed", "err"); renderDlArea(key); }
+}
+async function deleteModelUI(key) {
+  if (!confirm(`Delete the ${INFO[key]?.title || key} model (~${SIZES[key]} MB) from disk?\n\nYou can download it again later.`)) return;
+  try {
+    const fd = new FormData(); fd.append("model", key);
+    const r = await fetch("/delete_model", { method: "POST", body: fd });
+    if (!r.ok) { let d = "Delete failed"; try { d = (await r.json()).detail || d; } catch {} throw new Error(d); }
+    DOWNLOADED[key] = false;
+    if (selectedModel === key) { const firstDl = Object.keys(INFO).find(k => DOWNLOADED[k]); selectedModel = firstDl || DEFAULT_MODEL; }
+    renderDlArea(key); renderModelDropdown(); toast(`${INFO[key]?.title || key} deleted`, "ok");
+  } catch (e) { toast(e.message || "Delete failed", "err"); }
 }
 
 // ===================== View nav ==========================================
