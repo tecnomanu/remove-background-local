@@ -148,10 +148,16 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
 ## Release process
 
 1. Make sure tests pass: `./run_tests.sh`.
-2. Bump the version in `server.py` (`FastAPI(version=...)`) and the footer in
-   `static/index.html` if needed.
-3. Commit, then:
+2. Bump the version in **three** places so they stay in sync:
+   `package.json` (`version`), `server.py` (`FastAPI(version=...)`) and the
+   footer in `static/index.html` (`<b id="ver">`). Add a `CHANGELOG.md` entry.
+3. Commit, then tag and create the GitHub release:
    ```bash
    git tag vX.Y.Z && git push origin vX.Y.Z
-   gh release create vX.Y.Z --title "vX.Y.Z — remove-background-local" --notes "..."
+   gh release create vX.Y.Z --title "vX.Y.Z — ..." --notes "..."
    ```
+4. **npm publish is automated:** the `publish` workflow runs on every published
+   GitHub release and pushes the `package.json` version to npm (needs the repo
+   secret `NPM_TOKEN`, an npm Automation token). First publish can also be done
+   manually (`npm login && npm publish`). `npm publish` fails if that version is
+   already on npm, so each release must carry a new `package.json` version.
