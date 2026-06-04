@@ -1,0 +1,18 @@
+# remove-bg-local dependencies
+# Tested with Python 3.9 / 3.10 / 3.11 / 3.12 on Mac Apple Silicon
+
+# Server
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
+
+# Images
+Pillow>=10.0
+
+# Background removal (includes BiRefNet, ISNet, U2Net)
+rembg>=2.0.57
+
+# ONNX inference runtime (uses CoreML on Mac Apple Silicon).
+# Recent rembg versions moved this to an optional extra, so we add it
+# explicitly here. Do NOT use onnxruntime-gpu on Mac (CUDA only).
+onnxruntime>=1.16

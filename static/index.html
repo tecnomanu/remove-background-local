@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>remove-bg-local</title>
+<style>
+  :root {
+    --bg: #0f0f12;
+    --panel: #17171c;
+    --panel-2: #1f1f27;
+    --border: #2a2a35;
+    --text: #e7e7ee;
+    --text-dim: #9b9bab;
+    --accent: #7c5cff;
+    --accent-2: #5b8def;
+    --ok: #3ddc97;
+    --err: #ff6b6b;
+    --checker-a: #2a2a35;
+    --checker-b: #1f1f27;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  header h1 span { color: var(--accent); }
+  header .status {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  header .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok);
+  }
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  .controls label {
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  select, button {
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  select:hover, button:hover { border-color: var(--accent); }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    font-weight: 600;
+  }
+  button.primary:hover { background: #6a4ddb; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 60px 24px;
+    text-align: center;
+    background: var(--panel);
+    transition: border-color 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+  .drop-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(124, 92, 255, 0.05);
+  }
+  .drop-zone p {
+    margin: 8px 0;
+    color: var(--text-dim);
+  }
+  .drop-zone .big {
+    font-size: 16px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .drop-zone .hint {
+    font-size: 12px;
+  }
+
+  .results {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 720px) {
+    .results { grid-template-columns: 1fr; }
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .panel-body {
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(45deg, var(--checker-b) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--checker-b) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--checker-b) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--checker-b) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, 10px 0;
+    background-color: var(--checker-a);
+    position: relative;
+  }
+  .panel-body img {
+    max-width: 100%;
+    max-height: 480px;
+    display: block;
+  }
+  .panel-body.empty::after {
+    content: "No image";
+    color: var(--text-dim);
+    font-size: 13px;
+    position: absolute;
+  }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    max-width: 320px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.err { border-left-color: var(--err); }
+  .toast.ok  { border-left-color: var(--ok); }
+
+  .meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  details {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  details summary {
+    cursor: pointer;
+    color: var(--text-dim);
+  }
+  details .row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  details input[type="number"] {
+    width: 70px;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+  details .toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>remove<span>.</span>bg <small style="color:var(--text-dim);font-weight:400;font-size:13px;">local</small></h1>
+  <div class="status"><span class="dot"></span><span id="status-text">ready</span></div>
+</header>
+
+<main>
+  <div class="controls">
+    <label>
+      Model
+      <select id="model"></select>
+    </label>
+    <label>&nbsp;
+      <button id="download" disabled>Download PNG</button>
+    </label>
+    <label>&nbsp;
+      <button id="reset">Clear</button>
+    </label>
+  </div>
+
+  <details>
+    <summary>Advanced options (alpha matting)</summary>
+    <div class="row">
+      <label class="toggle">
+        <input type="checkbox" id="am-enabled" />
+        Enable alpha matting (better for hair / fine edges, slower)
+      </label>
+      <label>FG threshold <input type="number" id="am-fg" value="240" min="0" max="255" /></label>
+      <label>BG threshold <input type="number" id="am-bg" value="10" min="0" max="255" /></label>
+      <label>Erode <input type="number" id="am-erode" value="10" min="0" max="50" /></label>
+    </div>
+  </details>
+
+  <div class="drop-zone" id="drop">
+    <p class="big">Drag an image here</p>
+    <p class="hint">or click to select (PNG, JPG, WEBP &middot; max 30 MB)</p>
+    <input type="file" id="file" accept="image/*" style="display:none" />
+  </div>
+
+  <div class="results">
+    <div class="panel">
+      <div class="panel-header"><span>Original</span><span class="meta" id="meta-in"></span></div>
+      <div class="panel-body empty" id="body-in"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header"><span>No background</span><span class="meta" id="meta-out"></span></div>
+      <div class="panel-body empty" id="body-out"></div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const drop = $("drop");
+const fileInput = $("file");
+const modelSel = $("model");
+const downloadBtn = $("download");
+const resetBtn = $("reset");
+const statusText = $("status-text");
+const dot = document.querySelector(".dot");
+const bodyIn = $("body-in");
+const bodyOut = $("body-out");
+const metaIn = $("meta-in");
+const metaOut = $("meta-out");
+
+let lastBlobUrl = null;
+let lastFilename = "image_nobg.png";
+
+// --- Models --------------------------------------------------------------
+async function loadModels() {
+  try {
+    const r = await fetch("/models");
+    const data = await r.json();
+    modelSel.innerHTML = "";
+    for (const [key, label] of Object.entries(data.available)) {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = label;
+      if (key === data.default) opt.selected = true;
+      modelSel.appendChild(opt);
+    }
+  } catch (e) {
+    toast("Could not load the model list", "err");
+  }
+}
+
+// --- Toast ---------------------------------------------------------------
+const toastEl = $("toast");
+let toastTimer = null;
+function toast(msg, kind = "") {
+  toastEl.textContent = msg;
+  toastEl.className = "toast show " + kind;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toastEl.className = "toast " + kind;
+  }, 3500);
+}
+
+// --- Status --------------------------------------------------------------
+function setStatus(text, busy = false) {
+  statusText.textContent = text;
+  dot.style.background = busy ? "var(--accent)" : "var(--ok)";
+}
+
+// --- Drag and drop -------------------------------------------------------
+drop.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", (e) => {
+  if (e.target.files[0]) handleFile(e.target.files[0]);
+});
+["dragenter", "dragover"].forEach(ev =>
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault();
+    drop.classList.add("dragover");
+  })
+);
+["dragleave", "drop"].forEach(ev =>
+  drop.addEventListener(ev, (e) => {
+    e.preventDefault();
+    drop.classList.remove("dragover");
+  })
+);
+drop.addEventListener("drop", (e) => {
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+
+// Paste from clipboard
+document.addEventListener("paste", (e) => {
+  for (const item of e.clipboardData.items) {
+    if (item.type.startsWith("image/")) {
+      const f = item.getAsFile();
+      if (f) handleFile(f);
+      break;
+    }
+  }
+});
+
+// --- Process -------------------------------------------------------------
+async function handleFile(file) {
+  if (!file.type.startsWith("image/")) {
+    toast("That is not an image", "err");
+    return;
+  }
+  // Preview the original
+  const inUrl = URL.createObjectURL(file);
+  bodyIn.classList.remove("empty");
+  bodyIn.innerHTML = `<img src="${inUrl}" alt="Original" />`;
+  metaIn.textContent = `${file.name} - ${(file.size/1024).toFixed(0)} KB`;
+
+  // Show spinner in the output panel
+  bodyOut.classList.remove("empty");
+  bodyOut.innerHTML = `<div class="spinner"></div>`;
+  metaOut.textContent = "";
+  downloadBtn.disabled = true;
+
+  setStatus("processing...", true);
+  const t0 = performance.now();
+
+  const fd = new FormData();
+  fd.append("image", file);
+  fd.append("model", modelSel.value);
+  if ($("am-enabled").checked) {
+    fd.append("alpha_matting", "true");
+    fd.append("alpha_matting_foreground_threshold", $("am-fg").value);
+    fd.append("alpha_matting_background_threshold", $("am-bg").value);
+    fd.append("alpha_matting_erode_size", $("am-erode").value);
+  }
+
+  try {
+    const r = await fetch("/remove", { method: "POST", body: fd });
+    if (!r.ok) {
+      let detail = "Server error";
+      try { detail = (await r.json()).detail || detail; } catch {}
+      throw new Error(detail);
+    }
+    const blob = await r.blob();
+    if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+    lastBlobUrl = URL.createObjectURL(blob);
+    lastFilename = file.name.replace(/\.[^.]+$/, "") + "_nobg.png";
+
+    bodyOut.innerHTML = `<img src="${lastBlobUrl}" alt="No background" />`;
+    const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
+    const serverTime = r.headers.get("X-Processing-Time") || elapsed;
+    metaOut.textContent = `${(blob.size/1024).toFixed(0)} KB - ${serverTime}s`;
+    downloadBtn.disabled = false;
+    setStatus(`done (${elapsed}s)`);
+    toast("Done", "ok");
+  } catch (err) {
+    bodyOut.innerHTML = "";
+    bodyOut.classList.add("empty");
+    setStatus("error");
+    toast(err.message || "Error", "err");
+  }
+}
+
+// --- Download ------------------------------------------------------------
+downloadBtn.addEventListener("click", () => {
+  if (!lastBlobUrl) return;
+  const a = document.createElement("a");
+  a.href = lastBlobUrl;
+  a.download = lastFilename;
+  a.click();
+});
+
+// --- Reset ---------------------------------------------------------------
+resetBtn.addEventListener("click", () => {
+  bodyIn.innerHTML = "";
+  bodyOut.innerHTML = "";
+  bodyIn.classList.add("empty");
+  bodyOut.classList.add("empty");
+  metaIn.textContent = "";
+  metaOut.textContent = "";
+  downloadBtn.disabled = true;
+  if (lastBlobUrl) { URL.revokeObjectURL(lastBlobUrl); lastBlobUrl = null; }
+  fileInput.value = "";
+  setStatus("ready");
+});
+
+loadModels();
+</script>
+
+</body>
+</html>
