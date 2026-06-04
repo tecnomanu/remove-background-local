@@ -1,4 +1,4 @@
-# remove.background local
+# rm.background local
 
 A fast, private background-removal tool that runs entirely on your own machine.
 

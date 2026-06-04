@@ -105,7 +105,7 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
 
 ## Naming / legal
 
-- The product name in the UI and README is **remove.background local** (the
+- The product name in the UI and README is **rm.background local** (the
   repo / package slug stays `remove-bg-local`). Do NOT use the "remove.bg"
   wordmark as the product name or imitate their visual identity. remove.bg may
   be mentioned only as a contextual comparison, alongside the disclaimer that
