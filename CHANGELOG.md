@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.7.1 — App icon & title
+
+- Real-transparency SVG logos (logo-dark / logo-white) + PNGs, used as favicon and app/dock icon
+- Window title and app name set to "Remove Background Local"
+- Logos are favicon/icon only; the in-app wordmark is unchanged
+
 ## v1.7.0 — rm-bg CLI & desktop app
 
 - `rm-bg` command with subcommands: web, start, stop, init, desktop, models (ls/pull/rm), update

@@ -34,6 +34,7 @@ const LOG_FILE = path.join(HOME, "server.log");
 const PORT = process.env.PORT || "7860";
 const HOST = process.env.HOST || "127.0.0.1";
 const URL = `http://${HOST}:${PORT}`;
+const APP_NAME = "Remove Background Local";
 
 function log(m) { process.stdout.write(">> " + m + "\n"); }
 function err(m) { process.stderr.write(m + "\n"); }
@@ -154,6 +155,18 @@ function cmdDesktop() {
     }
     const r = run(IS_WIN ? "npm.cmd" : "npm", ["install", "electron@latest"], { cwd: desktopDir });
     if (r.status !== 0 || !fs.existsSync(electronBin)) { err("Could not install Electron. You can still use `rm-bg web`."); process.exit(1); }
+  }
+  // macOS shows the app menu name from the Electron bundle's Info.plist
+  // (app.setName can't change it without packaging). Patch it so the menu bar
+  // reads "Remove Background Local" instead of "Electron". Idempotent.
+  if (process.platform === "darwin") {
+    const appBundle = path.join(desktopDir, "node_modules", "electron", "dist", "Electron.app");
+    const plist = path.join(appBundle, "Contents", "Info.plist");
+    if (fs.existsSync(plist)) {
+      spawnSync("plutil", ["-replace", "CFBundleName", "-string", APP_NAME, plist]);
+      spawnSync("plutil", ["-replace", "CFBundleDisplayName", "-string", APP_NAME, plist]);
+      try { fs.utimesSync(appBundle, new Date(), new Date()); } catch {}
+    }
   }
   log("Opening desktop app...");
   const child = spawn(electronBin, [path.join(APP_DIR, "electron", "main.js")], {
