@@ -121,20 +121,26 @@ The first run downloads the Electron runtime once into `~/.remove-background-loc
 (it is not bundled, to keep the base install small). Everything else — models,
 sessions, privacy — works exactly like the web version.
 
-**Install it as a real Mac app (macOS):**
+**Install it as an app:**
 
 ```bash
-rm-bg desktop install      # builds "Remove Background Local.app" into /Applications
-rm-bg desktop uninstall    # removes it
+rm-bg desktop install      # add it to your system as an app
+rm-bg desktop uninstall    # remove it
 ```
 
-This creates a proper `Remove Background Local.app` (its own name, icon and bundle
-id) that you can open from Launchpad or the Applications folder like any other app.
-It is built locally on your machine, so there is no Gatekeeper warning. It still
-uses the Python environment under `~/.remove-background-local/`, so keep that in
-place (or run `rm-bg init` to recreate it). A signed, notarized installer for
-distributing to other people would need an Apple Developer account — out of scope
-for now.
+What this does per platform:
+
+- **macOS** — builds a real `Remove Background Local.app` into `/Applications`
+  (its own name, icon and bundle id). Open it from Launchpad/Applications. Built
+  locally, so there is no Gatekeeper warning.
+- **Linux** — adds a `.desktop` launcher to `~/.local/share/applications`, so
+  "Remove Background Local" shows up in your application menu.
+- **Windows** — creates a Start Menu shortcut (with the app icon).
+
+All of them launch the same desktop window and use the Python environment under
+`~/.remove-background-local/` (run `rm-bg init` to recreate it if needed). A
+signed/notarized installer for distributing to other people would need a platform
+developer account — out of scope for now.
 
 ## Usage
 

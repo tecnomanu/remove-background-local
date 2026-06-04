@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.9.0 — Cross-platform install
+
+- `rm-bg desktop install` now works on Linux (.desktop launcher) and Windows
+  (Start Menu shortcut) too, not just macOS (.app)
+- `rm-bg desktop uninstall` removes the app/shortcut on any platform
+- Ship app-icon.ico for the Windows shortcut
+
 ## v1.8.0 — Install as a Mac app
 
 - `rm-bg desktop install` builds a real `Remove Background Local.app` into

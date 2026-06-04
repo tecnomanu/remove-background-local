@@ -193,9 +193,13 @@ function appInstallDir() {
 }
 
 function cmdDesktopInstall() {
-  if (process.platform !== "darwin") {
-    err("`rm-bg desktop install` is currently macOS-only. On this OS use `rm-bg desktop`."); process.exit(1);
-  }
+  if (process.platform === "darwin") return installMac();
+  if (process.platform === "linux") return installLinux();
+  if (process.platform === "win32") return installWindows();
+  err("Unsupported platform for install. Use `rm-bg desktop`."); process.exit(1);
+}
+
+function installMac() {
   ensureSetup();
   const { desktopDir } = ensureElectron();
   const srcApp = path.join(desktopDir, "node_modules", "electron", "dist", "Electron.app");
@@ -231,13 +235,62 @@ function cmdDesktopInstall() {
   run("open", [destApp]);
 }
 
+function installLinux() {
+  ensureSetup();
+  ensureElectron();   // so the launcher works when clicked
+  const appsDir = path.join(os.homedir(), ".local", "share", "applications");
+  fs.mkdirSync(appsDir, { recursive: true });
+  const icon = path.join(APP_DIR, "static", "logo-dark.png");
+  const exec = `"${process.execPath}" "${path.join(APP_DIR, "bin", "cli.js")}" desktop`;
+  const entry = [
+    "[Desktop Entry]", "Type=Application", "Name=Remove Background Local",
+    "Comment=Remove image backgrounds locally", `Exec=${exec}`, `Icon=${icon}`,
+    "Terminal=false", "Categories=Graphics;Utility;", "",
+  ].join("\n");
+  const f = path.join(appsDir, "remove-background-local.desktop");
+  fs.writeFileSync(f, entry);
+  try { fs.chmodSync(f, 0o755); } catch {}
+  spawnSync("update-desktop-database", [appsDir]);
+  log("Installed launcher: " + f);
+  log("Look for 'Remove Background Local' in your application menu.");
+}
+
+function installWindows() {
+  ensureSetup();
+  ensureElectron();
+  const ico = path.join(APP_DIR, "static", "app-icon.ico");
+  const cli = path.join(APP_DIR, "bin", "cli.js");
+  const programs = path.join(process.env.APPDATA || os.homedir(), "Microsoft", "Windows", "Start Menu", "Programs");
+  try { fs.mkdirSync(programs, { recursive: true }); } catch {}
+  const lnk = path.join(programs, "Remove Background Local.lnk");
+  const esc = (s) => s.replace(/'/g, "''");
+  const ps = [
+    "$s = (New-Object -ComObject WScript.Shell).CreateShortcut('" + esc(lnk) + "');",
+    "$s.TargetPath = '" + esc(process.execPath) + "';",
+    "$s.Arguments = '\"" + esc(cli) + "\" desktop';",
+    "$s.IconLocation = '" + esc(ico) + "';",
+    "$s.WorkingDirectory = '" + esc(APP_DIR) + "';",
+    "$s.Save()",
+  ].join(" ");
+  const r = spawnSync("powershell", ["-NoProfile", "-Command", ps], { stdio: "inherit" });
+  if (r.status === 0) { log("Installed Start Menu shortcut: " + lnk); }
+  else { err("Could not create the shortcut. You can still run `rm-bg desktop`."); }
+}
+
 function cmdDesktopUninstall() {
   let removed = false;
+  // macOS
   for (const base of ["/Applications", path.join(os.homedir(), "Applications")]) {
     const a = path.join(base, "Remove Background Local.app");
     if (fs.existsSync(a)) { run("rm", ["-rf", a]); removed = true; log("Removed " + a); }
   }
-  if (!removed) log("No installed app found.");
+  // Linux
+  const dl = path.join(os.homedir(), ".local", "share", "applications", "remove-background-local.desktop");
+  if (fs.existsSync(dl)) { try { fs.unlinkSync(dl); removed = true; log("Removed " + dl); } catch {} }
+  // Windows
+  const wl = path.join(process.env.APPDATA || os.homedir(), "Microsoft", "Windows", "Start Menu", "Programs", "Remove Background Local.lnk");
+  if (fs.existsSync(wl)) { try { fs.unlinkSync(wl); removed = true; log("Removed " + wl); } catch {} }
+  if (!removed) log("No installed app/shortcut found.");
 }
 function cmdHelp() {
   process.stdout.write(`
@@ -249,8 +302,8 @@ Usage:
   rm-bg stop                    Stop the background server
   rm-bg init                    Set up and download the default model
   rm-bg desktop                 Open as a desktop app (Electron)
-  rm-bg desktop install         Install it as a real Mac app in /Applications
-  rm-bg desktop uninstall       Remove the installed Mac app
+  rm-bg desktop install         Install as an app (macOS .app / Linux launcher / Windows shortcut)
+  rm-bg desktop uninstall       Remove the installed app/shortcut
   rm-bg models ls               List models and which are downloaded
   rm-bg models pull --model X   Download a model
   rm-bg models rm   --model X   Delete a downloaded model
