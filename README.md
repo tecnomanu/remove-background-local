@@ -1,4 +1,6 @@
-# rm.background local
+![Remove Background in Local](docs/screenshot.webp)
+
+# Remove Background in Local
 
 A fast, private background-removal tool that runs entirely on your own machine.
 
@@ -7,8 +9,6 @@ A fast, private background-removal tool that runs entirely on your own machine.
 An offline alternative for people who want a workflow similar to cloud
 background-removal services such as remove.bg, without uploading images or
 paying API costs. Everything runs locally — no limits, no account, no API.
-
-![rm.background local](docs/screenshot.webp)
 
 It ships with **ISNet** as the default (fast and high quality) and also includes **BiRefNet** (2024) — one of the best open-source models for background segmentation — for when you want maximum quality.
 
@@ -48,7 +48,7 @@ If you don't, install it from [python.org](https://www.python.org/downloads/) or
 ## Install and run
 
 ```bash
-cd remove-bg-local
+cd remove-background-local
 ./run.sh
 ```
 
@@ -189,7 +189,7 @@ rule that every commit must keep the tests green. CI runs the tests on every pus
 ## Project structure
 
 ```
-remove-bg-local/
+remove-background-local/
 ├── server.py            # FastAPI backend
 ├── static/
 │   └── index.html       # Frontend (single file)

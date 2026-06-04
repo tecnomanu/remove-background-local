@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guide for AI agents (and humans) working on **remove-bg-local**. Read this before
+Guide for AI agents (and humans) working on **remove-background-local**. Read this before
 making changes. It explains the architecture, the conventions, and — importantly
 — how to test, because **every commit must keep the test suite green**.
 
@@ -14,7 +14,7 @@ leave the machine.
 ## Repository layout
 
 ```
-remove-bg-local/
+remove-background-local/
 ├── server.py              # FastAPI backend (all endpoints + model handling)
 ├── static/index.html      # Entire frontend (HTML + CSS + JS, single file)
 ├── run.sh                 # Start the server (creates/repairs the .venv)
@@ -106,7 +106,7 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
 ## Naming / legal
 
 - The product name in the UI and README is **rm.background local** (the
-  repo / package slug stays `remove-bg-local`). Do NOT use the "remove.bg"
+  repo / package slug stays `remove-background-local`). Do NOT use the "remove.bg"
   wordmark as the product name or imitate their visual identity. remove.bg may
   be mentioned only as a contextual comparison, alongside the disclaimer that
   this is an unofficial project, not affiliated with remove.bg / Canva.
@@ -153,5 +153,5 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
 3. Commit, then:
    ```bash
    git tag vX.Y.Z && git push origin vX.Y.Z
-   gh release create vX.Y.Z --title "vX.Y.Z — remove-bg-local" --notes "..."
+   gh release create vX.Y.Z --title "vX.Y.Z — remove-background-local" --notes "..."
    ```
