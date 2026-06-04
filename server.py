@@ -37,6 +37,7 @@ from __future__ import annotations
 import io
 import os
 import glob
+import json
 import time
 import asyncio
 import logging
@@ -62,6 +63,17 @@ log = logging.getLogger("remove-bg-local")
 
 BASE_DIR = Path(__file__).parent
 STATIC_DIR = BASE_DIR / "static"
+
+
+def _pkg_version() -> str:
+    """Single source of truth for the version: package.json (next to this file)."""
+    try:
+        return json.loads((BASE_DIR / "package.json").read_text("utf-8")).get("version", "0.0.0")
+    except Exception:
+        return "0.0.0"
+
+
+APP_VERSION = _pkg_version()
 
 AVAILABLE_MODELS = {
     "isnet-general-use": "ISNet General (default — fast, very good quality)",
@@ -278,7 +290,7 @@ async def ensure_session(model_name: str):
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="remove-background-local", version="1.12.0")
+app = FastAPI(title="remove-background-local", version=APP_VERSION)
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
@@ -297,6 +309,7 @@ async def root():
 async def health():
     return {
         "ok": True,
+        "version": APP_VERSION,
         "default_model": DEFAULT_MODEL,
         "loaded_models": list(_SESSIONS.keys()),
     }
