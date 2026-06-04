@@ -13,162 +13,189 @@
     --text: #e7e7ee;
     --text-dim: #9b9bab;
     --accent: #7c5cff;
-    --accent-2: #5b8def;
     --ok: #3ddc97;
     --err: #ff6b6b;
     --warn: #ffb454;
     --checker-a: #2a2a35;
     --checker-b: #1f1f27;
+    --header-h: 56px;
+    --footer-h: 44px;
+    --sidebar-w: 260px;
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
-  }
-  header {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--panel);
-  }
-  header h1 {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  header h1 span { color: var(--accent); }
-  header .status {
-    font-size: 12px;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  header .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--ok);
-    transition: background 0.2s;
-  }
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px;
-  }
-  .controls {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-    align-items: flex-end;
-  }
-  .controls label {
-    font-size: 13px;
-    color: var(--text-dim);
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    overflow: hidden;            /* page never scrolls; only the results pane does */
   }
+
+  /* ---- Fixed header ---- */
+  .app-header {
+    flex: 0 0 var(--header-h);
+    padding: 0 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--panel);
+    z-index: 20;
+  }
+  .app-header h1 { margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .app-header h1 span { color: var(--accent); }
+  .app-header h1 small { color: var(--text-dim); font-weight: 400; font-size: 12px; }
+  .status { font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); transition: background 0.2s; }
+
+  /* ---- Middle row: sidebar + workarea ---- */
+  .app-body { flex: 1 1 auto; display: flex; min-height: 0; }
+
+  .sidebar {
+    flex: 0 0 var(--sidebar-w);
+    border-right: 1px solid var(--border);
+    background: var(--panel);
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .sidebar-head {
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    font-size: 12px; color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .sidebar-list { flex: 1 1 auto; overflow-y: auto; padding: 8px; }
+  .sidebar-empty { color: var(--text-dim); font-size: 12px; padding: 16px 8px; text-align: center; }
+  .side-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px; border-radius: 8px; cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .side-item:hover { background: var(--panel-2); }
+  .side-item.active { border-color: var(--accent); background: rgba(124,92,255,0.08); }
+  .side-thumb {
+    flex: 0 0 36px; width: 36px; height: 36px; border-radius: 6px;
+    object-fit: cover; background: var(--panel-2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--text-dim); overflow: hidden;
+  }
+  .side-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .side-meta { flex: 1 1 auto; min-width: 0; }
+  .side-name { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .side-sub { font-size: 10px; }
+  .side-sub.queued { color: var(--text-dim); }
+  .side-sub.loading-model { color: var(--warn); }
+  .side-sub.processing { color: var(--accent); }
+  .side-sub.done { color: var(--ok); }
+  .side-sub.error { color: var(--err); }
+  .side-del {
+    flex: 0 0 auto; background: none; border: none; color: var(--text-dim);
+    cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; line-height: 1;
+  }
+  .side-del:hover { color: var(--err); background: var(--panel-2); }
+
+  .workarea { flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+  /* ---- Fixed top of workarea (controls, dropzone, options) ---- */
+  .fixed-top {
+    flex: 0 0 auto;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+  .controls label { font-size: 12px; color: var(--text-dim); display: flex; flex-direction: column; gap: 4px; }
   select, button {
-    background: var(--panel-2);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 13px;
-    font-family: inherit;
-    cursor: pointer;
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: inherit; cursor: pointer;
   }
   select:hover, button:hover { border-color: var(--accent); }
-  button.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-    font-weight: 600;
-  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: white; font-weight: 600; }
   button.primary:hover { background: #6a4ddb; }
   button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .spacer { margin-left: auto; }
+  .queue-info { font-size: 12px; color: var(--text-dim); align-self: center; }
 
   .drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: 12px;
-    padding: 48px 24px;
-    text-align: center;
-    background: var(--panel);
-    transition: border-color 0.2s, background 0.2s;
-    cursor: pointer;
+    border: 2px dashed var(--border); border-radius: 12px;
+    padding: 22px 24px; text-align: center; background: var(--panel);
+    transition: border-color 0.2s, background 0.2s; cursor: pointer;
   }
-  .drop-zone.dragover {
-    border-color: var(--accent);
-    background: rgba(124, 92, 255, 0.05);
-  }
-  .drop-zone p { margin: 8px 0; color: var(--text-dim); }
-  .drop-zone .big { font-size: 16px; color: var(--text); font-weight: 500; }
+  .drop-zone.dragover { border-color: var(--accent); background: rgba(124,92,255,0.05); }
+  .drop-zone p { margin: 4px 0; color: var(--text-dim); }
+  .drop-zone .big { font-size: 15px; color: var(--text); font-weight: 500; }
   .drop-zone .hint { font-size: 12px; }
 
-  /* Queue / results list */
-  .queue {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  details { margin-top: 10px; font-size: 13px; }
+  details summary { cursor: pointer; color: var(--text-dim); }
+  details .row { display: flex; gap: 16px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  details input[type="number"] {
+    width: 70px; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px;
   }
-  .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
+  details .toggle { display: flex; align-items: center; gap: 6px; }
+
+  /* background contrast swatches */
+  .bg-picker { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .bg-picker .lbl { font-size: 12px; color: var(--text-dim); }
+  .swatch {
+    width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--border);
+    cursor: pointer; padding: 0; background-clip: padding-box;
   }
+  .swatch.active { border-color: var(--accent); }
+  .swatch.checker {
+    background:
+      linear-gradient(45deg, #2a2a35 25%, transparent 25%),
+      linear-gradient(-45deg, #2a2a35 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #2a2a35 75%),
+      linear-gradient(-45deg, transparent 75%, #2a2a35 75%);
+    background-size: 10px 10px;
+    background-position: 0 0, 0 5px, 5px -5px, 5px 0;
+    background-color: #1f1f27;
+  }
+  .swatch.custom { position: relative; overflow: hidden; background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red); }
+  .swatch.custom input { position: absolute; inset: -4px; opacity: 0; cursor: pointer; }
+
+  /* ---- Scrollable results pane (the ONLY thing that scrolls) ---- */
+  .results {
+    flex: 1 1 auto; overflow-y: auto; padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .results-empty {
+    margin: auto; color: var(--text-dim); font-size: 13px; text-align: center;
+  }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; flex: 0 0 auto; }
+  .card.flash { animation: flash 1s ease; }
+  @keyframes flash { 0% { border-color: var(--accent); } 100% { border-color: var(--border); } }
   .card-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 9px 12px; border-bottom: 1px solid var(--border); font-size: 13px;
   }
-  .card-head .name {
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    max-width: 55%;
-  }
+  .card-head .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 50%; }
   .card-head .right { display: flex; align-items: center; gap: 10px; }
-  .badge {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    white-space: nowrap;
-  }
-  .badge.queued { color: var(--text-dim); }
+  .badge { font-size: 11px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
   .badge.loading-model { color: var(--warn); border-color: var(--warn); }
   .badge.processing { color: var(--accent); border-color: var(--accent); }
   .badge.done { color: var(--ok); border-color: var(--ok); }
   .badge.error { color: var(--err); border-color: var(--err); }
-  .meta {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-variant-numeric: tabular-nums;
+  .card-close {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 16px; line-height: 1; padding: 2px 6px; border-radius: 6px;
   }
+  .card-close:hover { color: var(--text); background: var(--panel-2); }
+  .meta { font-size: 11px; color: var(--text-dim); font-variant-numeric: tabular-nums; }
 
-  .pair {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-  }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
   @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
   .cell {
-    min-height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 220px; display: flex; align-items: center; justify-content: center;
+    position: relative; padding: 10px;
+  }
+  .cell.checker {
     background:
       linear-gradient(45deg, var(--checker-b) 25%, transparent 25%),
       linear-gradient(-45deg, var(--checker-b) 25%, transparent 25%),
@@ -177,61 +204,45 @@
     background-size: 20px 20px;
     background-position: 0 0, 0 10px, 10px -10px, 10px 0;
     background-color: var(--checker-a);
-    position: relative;
-    padding: 10px;
   }
-  .cell img { max-width: 100%; max-height: 300px; display: block; }
+  .cell img { max-width: 100%; max-height: 320px; display: block; }
   .cell .label {
-    position: absolute; top: 8px; left: 10px;
-    font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
-    color: var(--text-dim);
-    background: rgba(15,15,18,0.6);
-    padding: 2px 6px; border-radius: 4px;
+    position: absolute; top: 8px; left: 10px; font-size: 10px; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--text-dim);
+    background: rgba(15,15,18,0.6); padding: 2px 6px; border-radius: 4px;
   }
   .cell .placeholder { color: var(--text-dim); font-size: 12px; }
   .cell .errmsg { color: var(--err); font-size: 12px; text-align: center; padding: 0 14px; }
 
-  .btn-row { display: flex; gap: 8px; padding: 10px 14px; }
+  .btn-row { display: flex; gap: 8px; padding: 10px 12px; }
   .btn-row button { padding: 6px 12px; font-size: 12px; }
 
-  .spinner {
-    width: 30px; height: 30px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  .spinner.small { width: 16px; height: 16px; border-width: 2px; }
+  .spinner { width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  details {
+  /* ---- Fixed footer ---- */
+  .app-footer {
+    flex: 0 0 var(--footer-h);
+    padding: 0 20px;
+    border-top: 1px solid var(--border);
     background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 12px;
-    margin-bottom: 16px;
-    font-size: 13px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; color: var(--text-dim);
+    z-index: 20;
   }
-  details summary { cursor: pointer; color: var(--text-dim); }
-  details .row {
-    display: flex; gap: 16px; align-items: center;
-    margin-top: 8px; flex-wrap: wrap;
+  .app-footer .ver { font-variant-numeric: tabular-nums; }
+  .app-footer a.cafe {
+    color: var(--text); text-decoration: none;
+    border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px;
+    display: inline-flex; align-items: center; gap: 6px; transition: border-color 0.2s, background 0.2s;
   }
-  details input[type="number"] {
-    width: 70px; background: var(--panel-2); color: var(--text);
-    border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px;
-  }
-  details .toggle { display: flex; align-items: center; gap: 6px; }
+  .app-footer a.cafe:hover { border-color: var(--accent); background: var(--panel-2); }
 
   .toast {
-    position: fixed; bottom: 24px; right: 24px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    padding: 12px 16px; border-radius: 8px;
-    font-size: 13px; color: var(--text);
-    opacity: 0; transform: translateY(10px);
-    transition: opacity 0.2s, transform 0.2s;
+    position: fixed; bottom: calc(var(--footer-h) + 16px); right: 24px;
+    background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    padding: 12px 16px; border-radius: 8px; font-size: 13px; color: var(--text);
+    opacity: 0; transform: translateY(10px); transition: opacity 0.2s, transform 0.2s;
     pointer-events: none; max-width: 320px; z-index: 50;
   }
   .toast.show { opacity: 1; transform: translateY(0); }
@@ -240,22 +251,11 @@
 
   /* First-run install overlay */
   .overlay {
-    position: fixed; inset: 0; z-index: 100;
-    background: rgba(10,10,13,0.92);
-    backdrop-filter: blur(4px);
-    display: none;
-    align-items: center; justify-content: center;
-    padding: 24px;
+    position: fixed; inset: 0; z-index: 100; background: rgba(10,10,13,0.92);
+    backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 24px;
   }
   .overlay.show { display: flex; }
-  .install-box {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    max-width: 460px; width: 100%;
-    text-align: center;
-  }
+  .install-box { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 32px; max-width: 460px; width: 100%; text-align: center; }
   .install-box .spinner { margin: 0 auto 18px; }
   .install-box h2 { margin: 0 0 8px; font-size: 18px; }
   .install-box p { margin: 6px 0; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
@@ -264,53 +264,80 @@
   .install-box .timer { font-variant-numeric: tabular-nums; color: var(--accent); }
   .install-box.error .spinner { display: none; }
   .install-box button { margin-top: 16px; }
+
+  @media (max-width: 860px) { .sidebar { display: none; } }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>remove<span>.</span>bg <small style="color:var(--text-dim);font-weight:400;font-size:13px;">local</small></h1>
+<header class="app-header">
+  <h1>remove<span>.</span>bg <small>local</small></h1>
   <div class="status"><span class="dot" id="dot"></span><span id="status-text">starting…</span></div>
 </header>
 
-<main>
-  <div class="controls">
-    <label>
-      Model
-      <select id="model"></select>
-    </label>
-    <label>&nbsp;
-      <button id="download-all" disabled>Download all</button>
-    </label>
-    <label>&nbsp;
-      <button id="clear" disabled>Clear</button>
-    </label>
-    <label style="margin-left:auto;align-self:center;">
-      <span class="meta" id="queue-info"></span>
-    </label>
-  </div>
+<div class="app-body">
 
-  <details>
-    <summary>Advanced options (alpha matting)</summary>
-    <div class="row">
-      <label class="toggle">
-        <input type="checkbox" id="am-enabled" />
-        Enable alpha matting (better for hair / fine edges, slower)
-      </label>
-      <label>FG threshold <input type="number" id="am-fg" value="240" min="0" max="255" /></label>
-      <label>BG threshold <input type="number" id="am-bg" value="10" min="0" max="255" /></label>
-      <label>Erode <input type="number" id="am-erode" value="10" min="0" max="50" /></label>
+  <!-- Sidebar: session projects -->
+  <aside class="sidebar">
+    <div class="sidebar-head">
+      <span>Session</span><span id="side-count"></span>
     </div>
-  </details>
+    <div class="sidebar-list" id="sidebar-list">
+      <div class="sidebar-empty" id="sidebar-empty">No images yet.<br>Drop some to start.</div>
+    </div>
+  </aside>
 
-  <div class="drop-zone" id="drop">
-    <p class="big">Drag images here</p>
-    <p class="hint">or click to select &middot; you can drop several at once &middot; paste with Cmd/Ctrl+V (PNG, JPG, WEBP &middot; max 30 MB each)</p>
-    <input type="file" id="file" accept="image/*" multiple style="display:none" />
+  <!-- Work area -->
+  <div class="workarea">
+    <div class="fixed-top">
+      <div class="controls">
+        <label>Model<select id="model"></select></label>
+        <label>&nbsp;<button id="download-all" disabled>Download all</button></label>
+        <label>&nbsp;<button id="clear" disabled>Clear</button></label>
+        <span class="queue-info spacer" id="queue-info"></span>
+      </div>
+
+      <div class="drop-zone" id="drop">
+        <p class="big">Drag images here</p>
+        <p class="hint">or click to select &middot; several at once &middot; paste with Cmd/Ctrl+V (PNG, JPG, WEBP &middot; max 30 MB each)</p>
+        <input type="file" id="file" accept="image/*" multiple style="display:none" />
+      </div>
+
+      <div class="bg-picker">
+        <span class="lbl">Result background:</span>
+        <button class="swatch checker active" data-bg="checker" title="Checker (transparent)"></button>
+        <button class="swatch" data-bg="#ffffff" style="background:#ffffff" title="White"></button>
+        <button class="swatch" data-bg="#000000" style="background:#000000" title="Black"></button>
+        <button class="swatch" data-bg="#808080" style="background:#808080" title="Gray"></button>
+        <button class="swatch" data-bg="#3ddc97" style="background:#3ddc97" title="Green"></button>
+        <button class="swatch" data-bg="#5b8def" style="background:#5b8def" title="Blue"></button>
+        <span class="swatch custom" title="Custom color"><input type="color" id="bg-custom" value="#ff8800" /></span>
+      </div>
+
+      <details>
+        <summary>Advanced options (alpha matting)</summary>
+        <div class="row">
+          <label class="toggle"><input type="checkbox" id="am-enabled" /> Enable alpha matting (better for hair / fine edges, slower)</label>
+          <label>FG threshold <input type="number" id="am-fg" value="240" min="0" max="255" /></label>
+          <label>BG threshold <input type="number" id="am-bg" value="10" min="0" max="255" /></label>
+          <label>Erode <input type="number" id="am-erode" value="10" min="0" max="50" /></label>
+        </div>
+      </details>
+    </div>
+
+    <!-- Only this scrolls -->
+    <div class="results" id="results">
+      <div class="results-empty" id="results-empty">Processed images will appear here.</div>
+    </div>
   </div>
+</div>
 
-  <div class="queue" id="queue"></div>
-</main>
+<footer class="app-footer">
+  <span class="ver">remove-bg-local <b id="ver">v1.0.0</b></span>
+  <a class="cafe" href="https://cafecito.app/tecnomanu" target="_blank" rel="noopener">
+    © Manuel Bruña <span>·</span> ☕ Invitame un café
+  </a>
+</footer>
 
 <div class="toast" id="toast"></div>
 
@@ -320,8 +347,7 @@
     <div class="spinner"></div>
     <h2 id="install-title">Setting up remove-bg-local</h2>
     <p id="install-msg">Downloading the AI model for the first time…</p>
-    <p class="sub">This is a one-time download and is cached on your machine.
-      The app works fully offline afterwards.</p>
+    <p class="sub">This is a one-time download and is cached on your machine. The app works fully offline afterwards.</p>
     <p class="sub">Elapsed: <span class="timer" id="install-timer">0s</span></p>
     <button class="primary" id="install-retry" style="display:none;">Retry</button>
   </div>
@@ -336,20 +362,22 @@ const downloadAllBtn = $("download-all");
 const clearBtn = $("clear");
 const statusText = $("status-text");
 const dot = $("dot");
-const queueEl = $("queue");
+const resultsEl = $("results");
+const resultsEmpty = $("results-empty");
 const queueInfo = $("queue-info");
+const sidebarList = $("sidebar-list");
+const sidebarEmpty = $("sidebar-empty");
+const sideCount = $("side-count");
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-let MODELS = {};        // key -> label
-let SIZES = {};         // key -> approx MB
-let DEFAULT_MODEL = null;
-
-let jobs = [];          // all jobs in arrival order
+let MODELS = {}, SIZES = {}, DEFAULT_MODEL = null;
+let jobs = [];
 let processing = false;
 let jobSeq = 0;
+let resultBg = "checker";   // "checker" or a CSS color
 
-// --- Toast ---------------------------------------------------------------
+// --- Toast / status ------------------------------------------------------
 const toastEl = $("toast");
 let toastTimer = null;
 function toast(msg, kind = "") {
@@ -358,7 +386,6 @@ function toast(msg, kind = "") {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { toastEl.className = "toast " + kind; }, 3500);
 }
-
 function setStatus(text, busy = false) {
   statusText.textContent = text;
   dot.style.background = busy ? "var(--accent)" : "var(--ok)";
@@ -371,11 +398,9 @@ async function getStatus(model) {
   return r.json();
 }
 async function warmup(model) {
-  const fd = new FormData();
-  fd.append("model", model);
+  const fd = new FormData(); fd.append("model", model);
   await fetch("/warmup", { method: "POST", body: fd });
 }
-// Resolves once the model is ready; throws if it errors.
 async function waitForModel(model, onTick) {
   let s = await getStatus(model);
   if (s.state === "ready") return s;
@@ -393,9 +418,7 @@ async function waitForModel(model, onTick) {
 async function loadModels() {
   const r = await fetch("/models");
   const data = await r.json();
-  MODELS = data.available;
-  SIZES = data.sizes_mb || {};
-  DEFAULT_MODEL = data.default;
+  MODELS = data.available; SIZES = data.sizes_mb || {}; DEFAULT_MODEL = data.default;
   modelSel.innerHTML = "";
   for (const [key, label] of Object.entries(MODELS)) {
     const opt = document.createElement("option");
@@ -406,95 +429,50 @@ async function loadModels() {
     modelSel.appendChild(opt);
   }
 }
-
-// Warm up a model in the background when the user switches to it.
 modelSel.addEventListener("change", async () => {
   const m = modelSel.value;
   try {
     const s = await getStatus(m);
-    if (s.state !== "ready") {
-      toast(`Preparing ${m} (~${SIZES[m] || "?"} MB) in the background…`);
-      warmup(m);
-    }
+    if (s.state !== "ready") { toast(`Preparing ${m} (~${SIZES[m] || "?"} MB) in the background…`); warmup(m); }
   } catch {}
 });
 
-// --- First-run install overlay -------------------------------------------
-const overlay = $("overlay");
-const installBox = $("install-box");
-const installTitle = $("install-title");
-const installMsg = $("install-msg");
-const installTimer = $("install-timer");
-const installRetry = $("install-retry");
-let installTimerInt = null;
-
-function showOverlay(model) {
-  installBox.classList.remove("error");
-  installRetry.style.display = "none";
-  installTitle.textContent = "Setting up remove-bg-local";
-  const mb = SIZES[model];
-  installMsg.innerHTML = `Downloading the <span class="em">${MODELS[model] || model}</span> model` +
-    (mb ? ` (~<span class="em">${mb} MB</span>)` : "") + " for the first time…";
-  overlay.classList.add("show");
-  let t0 = Date.now();
-  clearInterval(installTimerInt);
-  installTimerInt = setInterval(() => {
-    installTimer.textContent = Math.round((Date.now() - t0) / 1000) + "s";
-  }, 1000);
+// --- Background contrast swatches ----------------------------------------
+function applyResultBg() {
+  document.querySelectorAll(".cell.out").forEach(styleOutCell);
 }
-function hideOverlay() {
-  overlay.classList.remove("show");
-  clearInterval(installTimerInt);
-}
-function overlayError(msg) {
-  installBox.classList.add("error");
-  installTitle.textContent = "Could not download the model";
-  installMsg.textContent = msg + ". Check your internet connection and try again.";
-  installRetry.style.display = "inline-block";
-  clearInterval(installTimerInt);
-}
-installRetry.addEventListener("click", () => initInstall());
-
-async function initInstall() {
-  try {
-    const s = await getStatus(DEFAULT_MODEL);
-    if (s.state === "ready") { hideOverlay(); setStatus("ready"); return; }
-    showOverlay(DEFAULT_MODEL);
-    setStatus("downloading model…", true);
-    await waitForModel(DEFAULT_MODEL);
-    hideOverlay();
-    setStatus("ready");
-    toast("Model ready — drop an image to start", "ok");
-  } catch (e) {
-    overlayError(e.message || "Download error");
-    setStatus("model error");
+function styleOutCell(cell) {
+  if (resultBg === "checker") {
+    cell.classList.add("checker");
+    cell.style.background = "";
+    cell.style.backgroundColor = "";
+  } else {
+    cell.classList.remove("checker");
+    cell.style.background = resultBg;
   }
 }
+document.querySelectorAll(".swatch[data-bg]").forEach(sw => {
+  sw.addEventListener("click", () => selectBg(sw.dataset.bg, sw));
+});
+$("bg-custom").addEventListener("input", (e) => {
+  selectBg(e.target.value, e.target.closest(".swatch"));
+});
+function selectBg(value, el) {
+  resultBg = value;
+  document.querySelectorAll(".swatch").forEach(s => s.classList.remove("active"));
+  if (el) el.classList.add("active");
+  applyResultBg();
+}
 
-// --- Drag and drop / paste / file picker ---------------------------------
+// --- Drag & drop / paste / picker ----------------------------------------
 drop.addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", (e) => {
-  if (e.target.files.length) enqueue([...e.target.files]);
-  fileInput.value = "";
-});
-["dragenter", "dragover"].forEach(ev =>
-  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("dragover"); })
-);
-["dragleave", "drop"].forEach(ev =>
-  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("dragover"); })
-);
-drop.addEventListener("drop", (e) => {
-  const files = [...(e.dataTransfer.files || [])];
-  if (files.length) enqueue(files);
-});
+fileInput.addEventListener("change", (e) => { if (e.target.files.length) enqueue([...e.target.files]); fileInput.value = ""; });
+["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("dragover"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("dragover"); }));
+drop.addEventListener("drop", (e) => { const f = [...(e.dataTransfer.files || [])]; if (f.length) enqueue(f); });
 document.addEventListener("paste", (e) => {
   const imgs = [];
-  for (const item of e.clipboardData.items) {
-    if (item.type.startsWith("image/")) {
-      const f = item.getAsFile();
-      if (f) imgs.push(f);
-    }
-  }
+  for (const item of e.clipboardData.items) if (item.type.startsWith("image/")) { const f = item.getAsFile(); if (f) imgs.push(f); }
   if (imgs.length) enqueue(imgs);
 });
 
@@ -503,17 +481,11 @@ function enqueue(files) {
   let added = 0;
   for (const f of files) {
     if (!f.type.startsWith("image/")) { toast(`Skipped "${f.name}" (not an image)`, "err"); continue; }
-    const job = {
-      id: ++jobSeq,
-      file: f,
-      name: f.name || `image-${jobSeq}.png`,
-      model: modelSel.value,
-      state: "queued",
-      inUrl: URL.createObjectURL(f),
-      sizeKB: (f.size / 1024).toFixed(0),
-      outUrl: null, outBlob: null, outName: null, ms: null, err: null,
-    };
-    jobs.push(job);
+    jobs.push({
+      id: ++jobSeq, file: f, name: f.name || `image-${jobSeq}.png`, model: modelSel.value,
+      state: "queued", inUrl: URL.createObjectURL(f), sizeKB: (f.size / 1024).toFixed(0),
+      outUrl: null, outBlob: null, outName: null, outKB: null, ms: null, err: null, hidden: false,
+    });
     added++;
   }
   if (added) { renderAll(); pump(); }
@@ -524,38 +496,22 @@ async function pump() {
   const job = jobs.find(j => j.state === "queued");
   if (!job) { setStatus("ready"); renderAll(); return; }
   processing = true;
-  try {
-    await runJob(job);
-  } catch (e) {
-    job.state = "error";
-    job.err = e.message || "Error";
-    toast(job.err, "err");
-  } finally {
-    processing = false;
-    renderAll();
-    pump(); // next in line
-  }
+  try { await runJob(job); }
+  catch (e) { job.state = "error"; job.err = e.message || "Error"; toast(job.err, "err"); }
+  finally { processing = false; renderAll(); pump(); }
 }
 
 async function runJob(job) {
   const t0 = performance.now();
-
-  // Make sure the model is ready (download if needed) before sending.
   let st = await getStatus(job.model);
   if (st.state !== "ready") {
-    job.state = "loading-model";
-    renderAll();
-    setStatus(`downloading ${job.model}…`, true);
+    job.state = "loading-model"; renderAll(); setStatus(`downloading ${job.model}…`, true);
     await waitForModel(job.model);
   }
-
-  job.state = "processing";
-  renderAll();
-  setStatus("processing…", true);
+  job.state = "processing"; renderAll(); setStatus("processing…", true);
 
   const fd = new FormData();
-  fd.append("image", job.file);
-  fd.append("model", job.model);
+  fd.append("image", job.file); fd.append("model", job.model);
   if ($("am-enabled").checked) {
     fd.append("alpha_matting", "true");
     fd.append("alpha_matting_foreground_threshold", $("am-fg").value);
@@ -564,128 +520,179 @@ async function runJob(job) {
   }
 
   const r = await fetch("/remove", { method: "POST", body: fd });
-  if (!r.ok) {
-    let detail = "Server error";
-    try { detail = (await r.json()).detail || detail; } catch {}
-    throw new Error(detail);
-  }
+  if (!r.ok) { let d = "Server error"; try { d = (await r.json()).detail || d; } catch {} throw new Error(d); }
   const blob = await r.blob();
-  job.outBlob = blob;
-  job.outUrl = URL.createObjectURL(blob);
+  job.outBlob = blob; job.outUrl = URL.createObjectURL(blob);
   job.outName = job.name.replace(/\.[^.]+$/, "") + "_nobg.png";
   job.outKB = (blob.size / 1024).toFixed(0);
   job.ms = r.headers.get("X-Processing-Time") || ((performance.now() - t0) / 1000).toFixed(2);
   job.state = "done";
 }
 
+// --- Image with controlled "asset missing" fallback ----------------------
+function makeImg(url, alt) {
+  const img = document.createElement("img");
+  img.alt = alt;
+  img.addEventListener("error", () => {
+    const div = document.createElement("div");
+    div.className = "errmsg"; div.textContent = "⚠ Asset unavailable";
+    if (img.parentNode) img.replaceWith(div);
+  });
+  img.src = url || "";
+  if (!url) img.dispatchEvent(new Event("error"));
+  return img;
+}
+
 // --- Render --------------------------------------------------------------
-const BADGE_TEXT = {
-  queued: "Queued",
-  "loading-model": "Downloading model…",
-  processing: "Processing…",
-  done: "Done",
-  error: "Error",
-};
+const BADGE_TEXT = { queued: "Queued", "loading-model": "Downloading model…", processing: "Processing…", done: "Done", error: "Error" };
 
 function renderAll() {
-  queueEl.innerHTML = "";
-  // newest first
-  for (let i = jobs.length - 1; i >= 0; i--) {
-    queueEl.appendChild(renderCard(jobs[i]));
-  }
+  // main results (visible jobs only), newest first
+  resultsEl.querySelectorAll(".card").forEach(c => c.remove());
+  const visible = jobs.filter(j => !j.hidden);
+  for (let i = jobs.length - 1; i >= 0; i--) if (!jobs[i].hidden) resultsEl.appendChild(renderCard(jobs[i]));
+  resultsEmpty.style.display = visible.length ? "none" : "";
+  if (!visible.length && jobs.length) resultsEmpty.textContent = "All cards closed. Click an item in the sidebar to reopen it.";
+  else resultsEmpty.textContent = "Processed images will appear here.";
+
+  // sidebar (all jobs)
+  renderSidebar();
+
+  // counts + buttons
   const doneCount = jobs.filter(j => j.state === "done").length;
-  const pending = jobs.filter(j => j.state === "queued" || j.state === "processing" || j.state === "loading-model").length;
+  const pending = jobs.filter(j => ["queued", "processing", "loading-model"].includes(j.state)).length;
   downloadAllBtn.disabled = doneCount === 0;
   clearBtn.disabled = jobs.length === 0;
-  queueInfo.textContent = jobs.length
-    ? `${doneCount} done${pending ? ` · ${pending} in queue` : ""}`
-    : "";
+  queueInfo.textContent = jobs.length ? `${doneCount} done${pending ? ` · ${pending} in queue` : ""}` : "";
 }
 
 function renderCard(job) {
   const card = document.createElement("div");
-  card.className = "card";
+  card.className = "card"; card.id = "card-" + job.id;
 
   const head = document.createElement("div");
   head.className = "card-head";
-  const metaRight = job.state === "done"
-    ? `<span class="meta">${job.outKB} KB · ${job.ms}s</span>`
-    : "";
-  head.innerHTML =
-    `<span class="name" title="${job.name}">${job.name}</span>` +
-    `<span class="right">${metaRight}<span class="badge ${job.state}">${BADGE_TEXT[job.state]}</span></span>`;
+  const metaRight = job.state === "done" ? `<span class="meta">${job.outKB} KB · ${job.ms}s</span>` : "";
+  head.innerHTML = `<span class="name" title="${job.name}">${job.name}</span>` +
+    `<span class="right">${metaRight}<span class="badge ${job.state}">${BADGE_TEXT[job.state]}</span>` +
+    `<button class="card-close" title="Close from view">✕</button></span>`;
+  head.querySelector(".card-close").addEventListener("click", () => hideJob(job.id));
   card.appendChild(head);
 
   const pair = document.createElement("div");
   pair.className = "pair";
 
   const inCell = document.createElement("div");
-  inCell.className = "cell";
-  inCell.innerHTML = `<span class="label">Original</span><img src="${job.inUrl}" alt="Original" />`;
+  inCell.className = "cell checker";
+  const inLabel = document.createElement("span"); inLabel.className = "label"; inLabel.textContent = "Original";
+  inCell.appendChild(inLabel); inCell.appendChild(makeImg(job.inUrl, "Original"));
   pair.appendChild(inCell);
 
   const outCell = document.createElement("div");
-  outCell.className = "cell";
-  if (job.state === "done") {
-    outCell.innerHTML = `<span class="label">No background</span><img src="${job.outUrl}" alt="No background" />`;
-  } else if (job.state === "error") {
-    outCell.innerHTML = `<span class="label">No background</span><div class="errmsg">${job.err || "Error"}</div>`;
-  } else if (job.state === "queued") {
-    outCell.innerHTML = `<span class="label">No background</span><div class="placeholder">Waiting…</div>`;
-  } else {
-    outCell.innerHTML = `<span class="label">No background</span><div class="spinner"></div>`;
-  }
+  outCell.className = "cell out";
+  const outLabel = document.createElement("span"); outLabel.className = "label"; outLabel.textContent = "No background";
+  outCell.appendChild(outLabel);
+  if (job.state === "done") outCell.appendChild(makeImg(job.outUrl, "No background"));
+  else if (job.state === "error") { const d = document.createElement("div"); d.className = "errmsg"; d.textContent = job.err || "Error"; outCell.appendChild(d); }
+  else if (job.state === "queued") { const d = document.createElement("div"); d.className = "placeholder"; d.textContent = "Waiting…"; outCell.appendChild(d); }
+  else { const s = document.createElement("div"); s.className = "spinner"; outCell.appendChild(s); }
+  styleOutCell(outCell);
   pair.appendChild(outCell);
   card.appendChild(pair);
 
   if (job.state === "done") {
-    const row = document.createElement("div");
-    row.className = "btn-row";
-    const btn = document.createElement("button");
-    btn.className = "primary";
-    btn.textContent = "Download PNG";
+    const row = document.createElement("div"); row.className = "btn-row";
+    const btn = document.createElement("button"); btn.className = "primary"; btn.textContent = "Download PNG";
     btn.addEventListener("click", () => downloadJob(job));
-    row.appendChild(btn);
-    card.appendChild(row);
+    row.appendChild(btn); card.appendChild(row);
   }
   return card;
 }
 
-function downloadJob(job) {
-  if (!job.outUrl) return;
-  const a = document.createElement("a");
-  a.href = job.outUrl;
-  a.download = job.outName;
-  a.click();
+function renderSidebar() {
+  sidebarList.querySelectorAll(".side-item").forEach(e => e.remove());
+  sidebarEmpty.style.display = jobs.length ? "none" : "";
+  sideCount.textContent = jobs.length ? String(jobs.length) : "";
+  for (let i = jobs.length - 1; i >= 0; i--) {
+    const job = jobs[i];
+    const item = document.createElement("div");
+    item.className = "side-item" + (job.hidden ? "" : " active");
+    const thumb = document.createElement("div"); thumb.className = "side-thumb";
+    if (job.inUrl) { const im = document.createElement("img"); im.src = job.inUrl; im.alt = ""; im.addEventListener("error", () => { thumb.textContent = "⚠"; }); thumb.appendChild(im); }
+    else thumb.textContent = "⚠";
+    const meta = document.createElement("div"); meta.className = "side-meta";
+    meta.innerHTML = `<div class="side-name" title="${job.name}">${job.name}</div><div class="side-sub ${job.state}">${BADGE_TEXT[job.state]}</div>`;
+    const del = document.createElement("button"); del.className = "side-del"; del.title = "Delete from list"; del.textContent = "🗑";
+    del.addEventListener("click", (e) => { e.stopPropagation(); deleteJob(job.id); });
+    item.appendChild(thumb); item.appendChild(meta); item.appendChild(del);
+    item.addEventListener("click", () => revealJob(job.id));
+    sidebarList.appendChild(item);
+  }
 }
 
+// --- Card actions --------------------------------------------------------
+function hideJob(id) { const j = jobs.find(x => x.id === id); if (j) { j.hidden = true; renderAll(); } }
+function revealJob(id) {
+  const j = jobs.find(x => x.id === id); if (!j) return;
+  j.hidden = false; renderAll();
+  const card = $("card-" + id);
+  if (card) { card.scrollIntoView({ behavior: "smooth", block: "center" }); card.classList.add("flash"); setTimeout(() => card.classList.remove("flash"), 1000); }
+}
+function deleteJob(id) {
+  const idx = jobs.findIndex(x => x.id === id); if (idx < 0) return;
+  const j = jobs[idx];
+  if (j.inUrl) URL.revokeObjectURL(j.inUrl);
+  if (j.outUrl) URL.revokeObjectURL(j.outUrl);
+  jobs.splice(idx, 1);
+  renderAll();
+}
+
+function downloadJob(job) {
+  if (!job.outUrl) return;
+  const a = document.createElement("a"); a.href = job.outUrl; a.download = job.outName; a.click();
+}
 downloadAllBtn.addEventListener("click", async () => {
-  const done = jobs.filter(j => j.state === "done");
-  for (const job of done) {
-    downloadJob(job);
-    await sleep(250); // give the browser time between downloads
-  }
+  for (const job of jobs.filter(j => j.state === "done")) { downloadJob(job); await sleep(250); }
+});
+clearBtn.addEventListener("click", () => {
+  for (const j of jobs) { if (j.inUrl) URL.revokeObjectURL(j.inUrl); if (j.outUrl) URL.revokeObjectURL(j.outUrl); }
+  jobs = []; renderAll(); setStatus(processing ? "processing…" : "ready", processing);
 });
 
-clearBtn.addEventListener("click", () => {
-  for (const j of jobs) {
-    if (j.inUrl) URL.revokeObjectURL(j.inUrl);
-    if (j.outUrl) URL.revokeObjectURL(j.outUrl);
-  }
-  jobs = [];
-  renderAll();
-  setStatus(processing ? "processing…" : "ready", processing);
-});
+// --- First-run install overlay -------------------------------------------
+const overlay = $("overlay"), installBox = $("install-box"), installTitle = $("install-title");
+const installMsg = $("install-msg"), installTimer = $("install-timer"), installRetry = $("install-retry");
+let installTimerInt = null;
+function showOverlay(model) {
+  installBox.classList.remove("error"); installRetry.style.display = "none";
+  installTitle.textContent = "Setting up remove-bg-local";
+  const mb = SIZES[model];
+  installMsg.innerHTML = `Downloading the <span class="em">${MODELS[model] || model}</span> model` + (mb ? ` (~<span class="em">${mb} MB</span>)` : "") + " for the first time…";
+  overlay.classList.add("show");
+  const t0 = Date.now(); clearInterval(installTimerInt);
+  installTimerInt = setInterval(() => { installTimer.textContent = Math.round((Date.now() - t0) / 1000) + "s"; }, 1000);
+}
+function hideOverlay() { overlay.classList.remove("show"); clearInterval(installTimerInt); }
+function overlayError(msg) {
+  installBox.classList.add("error"); installTitle.textContent = "Could not download the model";
+  installMsg.textContent = msg + ". Check your internet connection and try again.";
+  installRetry.style.display = "inline-block"; clearInterval(installTimerInt);
+}
+installRetry.addEventListener("click", () => initInstall());
+async function initInstall() {
+  try {
+    const s = await getStatus(DEFAULT_MODEL);
+    if (s.state === "ready") { hideOverlay(); setStatus("ready"); return; }
+    showOverlay(DEFAULT_MODEL); setStatus("downloading model…", true);
+    await waitForModel(DEFAULT_MODEL);
+    hideOverlay(); setStatus("ready"); toast("Model ready — drop an image to start", "ok");
+  } catch (e) { overlayError(e.message || "Download error"); setStatus("model error"); }
+}
 
 // --- Boot ----------------------------------------------------------------
 (async function boot() {
-  try {
-    await loadModels();
-    await initInstall();
-  } catch (e) {
-    setStatus("server error");
-    toast("Could not reach the server", "err");
-  }
+  try { await loadModels(); await initInstall(); }
+  catch (e) { setStatus("server error"); toast("Could not reach the server", "err"); }
 })();
 </script>
 

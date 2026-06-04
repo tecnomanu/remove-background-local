@@ -163,7 +163,7 @@ async def ensure_session(model_name: str):
 # App
 # ---------------------------------------------------------------------------
 
-app = FastAPI(title="remove-bg-local", version="1.1.0")
+app = FastAPI(title="remove-bg-local", version="1.0.0")
 
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
