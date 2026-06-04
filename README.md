@@ -2,16 +2,19 @@
 
 Your own remove.bg running on localhost. No limits, no uploading your images to anyone's server, no paying for an API.
 
-It uses **BiRefNet** (2024) — one of the best open-source models for background segmentation, with quality very close to remove.bg in most cases.
+It ships with **ISNet** as the default (fast and high quality) and also includes **BiRefNet** (2024) — one of the best open-source models for background segmentation, with quality very close to remove.bg — for when you want maximum quality.
 
 ## Features
 
 - Web UI with drag & drop (paste from clipboard works too)
+- **Processing queue** — drop several images at once and they are processed one
+  by one; each result is kept in its own card, nothing gets overwritten
+- **First-run setup screen** — the first time it opens it tells you the model is
+  downloading (it is a one-time download) instead of leaving you guessing
 - Switch between 6 models depending on the case (general, portrait, lite, etc.)
 - Alpha matting mode for fine edges (hair, plants)
 - 100% local processing — your images never leave your machine
 - No limits on count or resolution (beyond the file-size cap)
-- CoreML acceleration on Apple Silicon
 
 ## Requirements
 
@@ -50,20 +53,28 @@ Open in your browser: **http://127.0.0.1:7860**
 
 ## Usage
 
-1. Drag an image onto the box (or click to choose one, or paste with Cmd+V)
-2. Wait a few seconds
-3. Download the PNG with a transparent background
+1. Drag one or more images onto the box (or click to choose, or paste with Cmd+V)
+2. They are added to the queue and processed one by one
+3. Download each result, or use **Download all**
 
 ### Which model to choose
 
+Times below are rough per-image figures on Apple Silicon (CPU execution).
+
 | Model | When to use it | Speed |
 |---|---|---|
-| `birefnet-general` | Default. Best quality for any image. | Medium |
-| `birefnet-general-lite` | When you need speed without losing much quality. | Fast |
-| `birefnet-portrait` | Photos of people, especially with difficult hair. | Medium |
-| `isnet-general-use` | Fast alternative to BiRefNet general. | Fast |
-| `u2net` | The classic — good for simple products. | Very fast |
-| `u2net_human_seg` | People only, very fast. | Very fast |
+| `isnet-general-use` | **Default.** Fast and very good quality for any image. | ~1s |
+| `u2net` | The classic — good for simple products. | ~0.5s |
+| `u2net_human_seg` | People only. | ~0.5s |
+| `birefnet-general-lite` | Higher quality, still reasonable. | ~9s |
+| `birefnet-general` | Best quality for any image. | ~20s |
+| `birefnet-portrait` | People, best quality (difficult hair). | ~20s |
+
+> **Why ISNet by default and not BiRefNet?** BiRefNet is the highest-quality
+> model, but it is large (~930 MB) and slow on CPU. ISNet is the better default
+> for a tool that should "just work" — fast, reliable, and still excellent
+> quality. Switch to a BiRefNet model from the selector whenever you want
+> maximum quality and don't mind the wait.
 
 ### Alpha matting (optional)
 
@@ -79,8 +90,13 @@ Environment variables before running `./run.sh`:
 
 ```bash
 HOST=0.0.0.0 PORT=8000 ./run.sh         # Change port / expose to the local network
-REMBG_MODEL=birefnet-portrait ./run.sh  # Change the default model
+REMBG_MODEL=birefnet-general ./run.sh   # Change the default model
 MAX_UPLOAD_MB=100 ./run.sh              # Raise the size limit
+
+# Execution provider (advanced). CPU is the default because the onnxruntime
+# CoreML provider hangs on some models on Apple Silicon. CPU is fast enough for
+# the lighter models. Only change this if you know what you are doing:
+REMBG_PROVIDERS=CoreMLExecutionProvider,CPUExecutionProvider ./run.sh
 ```
 
 ## Programmatic use (no UI)
@@ -112,16 +128,18 @@ done
 |---|---|---|
 | `GET` | `/` | Web UI |
 | `POST` | `/remove` | Remove background, returns a transparent PNG |
-| `GET` | `/models` | List of available models |
+| `GET` | `/models` | List of available models (with approx sizes) |
+| `GET` | `/model_status` | Load state of a model (idle / loading / ready / error) |
+| `POST` | `/warmup` | Start loading a model in the background (non-blocking) |
 | `GET` | `/health` | Server status |
 
-## Expected performance on Mac Apple Silicon
+## Expected performance on Mac Apple Silicon (CPU)
 
-- M1/M2: 1–3 seconds per image (HD)
-- M3/M4: 0.5–2 seconds per image (HD)
-- 4K images: ~5–10 seconds
+With the default ISNet model: roughly **~1 second per image**. U2Net is even faster
+(~0.5s). The BiRefNet models are slower (~9–20s) but give the highest quality.
 
-The first call is slower because it loads the model into memory (~5–15 seconds depending on the model).
+The first request to a given model is slower because it downloads (one time) and
+loads the model into memory. The first-run setup screen shows this is happening.
 
 ## Troubleshooting
 
@@ -133,9 +151,13 @@ The first call is slower because it loads the model into memory (~5–15 seconds
 
 **The model won't download**: check your internet connection — the first time it needs to fetch the model from Hugging Face / GitHub. After that it works 100% offline.
 
-**Bad quality on some image**: try another model from the selector. For people with difficult hair, BiRefNet portrait + alpha matting is usually best.
+**Bad quality on some image**: try another model from the selector. For maximum quality, use a BiRefNet model; for people with difficult hair, BiRefNet portrait + alpha matting is usually best.
 
 **Port 7860 in use**: change it with `PORT=8000 ./run.sh`
+
+**I moved the project folder and it stopped working**: a Python virtualenv stores
+absolute paths, so a copied/moved `.venv` is broken. `run.sh` detects this and
+rebuilds the environment automatically — just run `./run.sh` again.
 
 ## Project structure
 

@@ -16,6 +16,7 @@
     --accent-2: #5b8def;
     --ok: #3ddc97;
     --err: #ff6b6b;
+    --warn: #ffb454;
     --checker-a: #2a2a35;
     --checker-b: #1f1f27;
   }
@@ -52,9 +53,10 @@
   header .dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--ok);
+    transition: background 0.2s;
   }
   main {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 24px;
   }
@@ -62,8 +64,8 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
-    align-items: center;
+    margin-bottom: 16px;
+    align-items: flex-end;
   }
   .controls label {
     font-size: 13px;
@@ -95,7 +97,7 @@
   .drop-zone {
     border: 2px dashed var(--border);
     border-radius: 12px;
-    padding: 60px 24px;
+    padding: 48px 24px;
     text-align: center;
     background: var(--panel);
     transition: border-color 0.2s, background 0.2s;
@@ -105,45 +107,65 @@
     border-color: var(--accent);
     background: rgba(124, 92, 255, 0.05);
   }
-  .drop-zone p {
-    margin: 8px 0;
-    color: var(--text-dim);
-  }
-  .drop-zone .big {
-    font-size: 16px;
-    color: var(--text);
-    font-weight: 500;
-  }
-  .drop-zone .hint {
-    font-size: 12px;
-  }
+  .drop-zone p { margin: 8px 0; color: var(--text-dim); }
+  .drop-zone .big { font-size: 16px; color: var(--text); font-weight: 500; }
+  .drop-zone .hint { font-size: 12px; }
 
-  .results {
+  /* Queue / results list */
+  .queue {
     margin-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
-  @media (max-width: 720px) {
-    .results { grid-template-columns: 1fr; }
-  }
-  .panel {
+  .card {
     background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 12px;
     overflow: hidden;
   }
-  .panel-header {
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     padding: 10px 14px;
     border-bottom: 1px solid var(--border);
     font-size: 13px;
-    color: var(--text-dim);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
-  .panel-body {
-    min-height: 320px;
+  .card-head .name {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 55%;
+  }
+  .card-head .right { display: flex; align-items: center; gap: 10px; }
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+  .badge.queued { color: var(--text-dim); }
+  .badge.loading-model { color: var(--warn); border-color: var(--warn); }
+  .badge.processing { color: var(--accent); border-color: var(--accent); }
+  .badge.done { color: var(--ok); border-color: var(--ok); }
+  .badge.error { color: var(--err); border-color: var(--err); }
+  .meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+  }
+  @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+  .cell {
+    min-height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -156,54 +178,31 @@
     background-position: 0 0, 0 10px, 10px -10px, 10px 0;
     background-color: var(--checker-a);
     position: relative;
+    padding: 10px;
   }
-  .panel-body img {
-    max-width: 100%;
-    max-height: 480px;
-    display: block;
-  }
-  .panel-body.empty::after {
-    content: "No image";
+  .cell img { max-width: 100%; max-height: 300px; display: block; }
+  .cell .label {
+    position: absolute; top: 8px; left: 10px;
+    font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase;
     color: var(--text-dim);
-    font-size: 13px;
-    position: absolute;
+    background: rgba(15,15,18,0.6);
+    padding: 2px 6px; border-radius: 4px;
   }
+  .cell .placeholder { color: var(--text-dim); font-size: 12px; }
+  .cell .errmsg { color: var(--err); font-size: 12px; text-align: center; padding: 0 14px; }
+
+  .btn-row { display: flex; gap: 8px; padding: 10px 14px; }
+  .btn-row button { padding: 6px 12px; font-size: 12px; }
 
   .spinner {
-    width: 32px; height: 32px;
+    width: 30px; height: 30px;
     border: 3px solid var(--border);
     border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
+  .spinner.small { width: 16px; height: 16px; border-width: 2px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--text);
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
-    max-width: 320px;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-  .toast.err { border-left-color: var(--err); }
-  .toast.ok  { border-left-color: var(--ok); }
-
-  .meta {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-variant-numeric: tabular-nums;
-  }
 
   details {
     background: var(--panel);
@@ -213,37 +212,65 @@
     margin-bottom: 16px;
     font-size: 13px;
   }
-  details summary {
-    cursor: pointer;
-    color: var(--text-dim);
-  }
+  details summary { cursor: pointer; color: var(--text-dim); }
   details .row {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    margin-top: 8px;
-    flex-wrap: wrap;
+    display: flex; gap: 16px; align-items: center;
+    margin-top: 8px; flex-wrap: wrap;
   }
   details input[type="number"] {
-    width: 70px;
+    width: 70px; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px;
+  }
+  details .toggle { display: flex; align-items: center; gap: 6px; }
+
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
     background: var(--panel-2);
-    color: var(--text);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 8px;
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px; border-radius: 8px;
+    font-size: 13px; color: var(--text);
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none; max-width: 320px; z-index: 50;
   }
-  details .toggle {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.err { border-left-color: var(--err); }
+  .toast.ok  { border-left-color: var(--ok); }
+
+  /* First-run install overlay */
+  .overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(10,10,13,0.92);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 24px;
   }
+  .overlay.show { display: flex; }
+  .install-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 460px; width: 100%;
+    text-align: center;
+  }
+  .install-box .spinner { margin: 0 auto 18px; }
+  .install-box h2 { margin: 0 0 8px; font-size: 18px; }
+  .install-box p { margin: 6px 0; color: var(--text-dim); font-size: 14px; line-height: 1.5; }
+  .install-box .em { color: var(--text); }
+  .install-box .sub { font-size: 12px; margin-top: 14px; }
+  .install-box .timer { font-variant-numeric: tabular-nums; color: var(--accent); }
+  .install-box.error .spinner { display: none; }
+  .install-box button { margin-top: 16px; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>remove<span>.</span>bg <small style="color:var(--text-dim);font-weight:400;font-size:13px;">local</small></h1>
-  <div class="status"><span class="dot"></span><span id="status-text">ready</span></div>
+  <div class="status"><span class="dot" id="dot"></span><span id="status-text">starting…</span></div>
 </header>
 
 <main>
@@ -253,10 +280,13 @@
       <select id="model"></select>
     </label>
     <label>&nbsp;
-      <button id="download" disabled>Download PNG</button>
+      <button id="download-all" disabled>Download all</button>
     </label>
     <label>&nbsp;
-      <button id="reset">Clear</button>
+      <button id="clear" disabled>Clear</button>
+    </label>
+    <label style="margin-left:auto;align-self:center;">
+      <span class="meta" id="queue-info"></span>
     </label>
   </div>
 
@@ -274,59 +304,50 @@
   </details>
 
   <div class="drop-zone" id="drop">
-    <p class="big">Drag an image here</p>
-    <p class="hint">or click to select (PNG, JPG, WEBP &middot; max 30 MB)</p>
-    <input type="file" id="file" accept="image/*" style="display:none" />
+    <p class="big">Drag images here</p>
+    <p class="hint">or click to select &middot; you can drop several at once &middot; paste with Cmd/Ctrl+V (PNG, JPG, WEBP &middot; max 30 MB each)</p>
+    <input type="file" id="file" accept="image/*" multiple style="display:none" />
   </div>
 
-  <div class="results">
-    <div class="panel">
-      <div class="panel-header"><span>Original</span><span class="meta" id="meta-in"></span></div>
-      <div class="panel-body empty" id="body-in"></div>
-    </div>
-    <div class="panel">
-      <div class="panel-header"><span>No background</span><span class="meta" id="meta-out"></span></div>
-      <div class="panel-body empty" id="body-out"></div>
-    </div>
-  </div>
+  <div class="queue" id="queue"></div>
 </main>
 
 <div class="toast" id="toast"></div>
+
+<!-- First-run install overlay -->
+<div class="overlay" id="overlay">
+  <div class="install-box" id="install-box">
+    <div class="spinner"></div>
+    <h2 id="install-title">Setting up remove-bg-local</h2>
+    <p id="install-msg">Downloading the AI model for the first time…</p>
+    <p class="sub">This is a one-time download and is cached on your machine.
+      The app works fully offline afterwards.</p>
+    <p class="sub">Elapsed: <span class="timer" id="install-timer">0s</span></p>
+    <button class="primary" id="install-retry" style="display:none;">Retry</button>
+  </div>
+</div>
 
 <script>
 const $ = (id) => document.getElementById(id);
 const drop = $("drop");
 const fileInput = $("file");
 const modelSel = $("model");
-const downloadBtn = $("download");
-const resetBtn = $("reset");
+const downloadAllBtn = $("download-all");
+const clearBtn = $("clear");
 const statusText = $("status-text");
-const dot = document.querySelector(".dot");
-const bodyIn = $("body-in");
-const bodyOut = $("body-out");
-const metaIn = $("meta-in");
-const metaOut = $("meta-out");
+const dot = $("dot");
+const queueEl = $("queue");
+const queueInfo = $("queue-info");
 
-let lastBlobUrl = null;
-let lastFilename = "image_nobg.png";
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-// --- Models --------------------------------------------------------------
-async function loadModels() {
-  try {
-    const r = await fetch("/models");
-    const data = await r.json();
-    modelSel.innerHTML = "";
-    for (const [key, label] of Object.entries(data.available)) {
-      const opt = document.createElement("option");
-      opt.value = key;
-      opt.textContent = label;
-      if (key === data.default) opt.selected = true;
-      modelSel.appendChild(opt);
-    }
-  } catch (e) {
-    toast("Could not load the model list", "err");
-  }
-}
+let MODELS = {};        // key -> label
+let SIZES = {};         // key -> approx MB
+let DEFAULT_MODEL = null;
+
+let jobs = [];          // all jobs in arrival order
+let processing = false;
+let jobSeq = 0;
 
 // --- Toast ---------------------------------------------------------------
 const toastEl = $("toast");
@@ -335,74 +356,206 @@ function toast(msg, kind = "") {
   toastEl.textContent = msg;
   toastEl.className = "toast show " + kind;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toastEl.className = "toast " + kind;
-  }, 3500);
+  toastTimer = setTimeout(() => { toastEl.className = "toast " + kind; }, 3500);
 }
 
-// --- Status --------------------------------------------------------------
 function setStatus(text, busy = false) {
   statusText.textContent = text;
   dot.style.background = busy ? "var(--accent)" : "var(--ok)";
 }
 
-// --- Drag and drop -------------------------------------------------------
-drop.addEventListener("click", () => fileInput.click());
-fileInput.addEventListener("change", (e) => {
-  if (e.target.files[0]) handleFile(e.target.files[0]);
-});
-["dragenter", "dragover"].forEach(ev =>
-  drop.addEventListener(ev, (e) => {
-    e.preventDefault();
-    drop.classList.add("dragover");
-  })
-);
-["dragleave", "drop"].forEach(ev =>
-  drop.addEventListener(ev, (e) => {
-    e.preventDefault();
-    drop.classList.remove("dragover");
-  })
-);
-drop.addEventListener("drop", (e) => {
-  const f = e.dataTransfer.files[0];
-  if (f) handleFile(f);
+// --- Model status helpers ------------------------------------------------
+async function getStatus(model) {
+  const r = await fetch("/model_status?model=" + encodeURIComponent(model));
+  if (!r.ok) throw new Error("status check failed");
+  return r.json();
+}
+async function warmup(model) {
+  const fd = new FormData();
+  fd.append("model", model);
+  await fetch("/warmup", { method: "POST", body: fd });
+}
+// Resolves once the model is ready; throws if it errors.
+async function waitForModel(model, onTick) {
+  let s = await getStatus(model);
+  if (s.state === "ready") return s;
+  await warmup(model);
+  while (true) {
+    s = await getStatus(model);
+    if (onTick) onTick(s);
+    if (s.state === "ready") return s;
+    if (s.state === "error") throw new Error(s.error || "Model failed to load");
+    await sleep(1200);
+  }
+}
+
+// --- Models --------------------------------------------------------------
+async function loadModels() {
+  const r = await fetch("/models");
+  const data = await r.json();
+  MODELS = data.available;
+  SIZES = data.sizes_mb || {};
+  DEFAULT_MODEL = data.default;
+  modelSel.innerHTML = "";
+  for (const [key, label] of Object.entries(MODELS)) {
+    const opt = document.createElement("option");
+    opt.value = key;
+    const mb = SIZES[key];
+    opt.textContent = mb ? `${label} · ~${mb} MB` : label;
+    if (key === DEFAULT_MODEL) opt.selected = true;
+    modelSel.appendChild(opt);
+  }
+}
+
+// Warm up a model in the background when the user switches to it.
+modelSel.addEventListener("change", async () => {
+  const m = modelSel.value;
+  try {
+    const s = await getStatus(m);
+    if (s.state !== "ready") {
+      toast(`Preparing ${m} (~${SIZES[m] || "?"} MB) in the background…`);
+      warmup(m);
+    }
+  } catch {}
 });
 
-// Paste from clipboard
+// --- First-run install overlay -------------------------------------------
+const overlay = $("overlay");
+const installBox = $("install-box");
+const installTitle = $("install-title");
+const installMsg = $("install-msg");
+const installTimer = $("install-timer");
+const installRetry = $("install-retry");
+let installTimerInt = null;
+
+function showOverlay(model) {
+  installBox.classList.remove("error");
+  installRetry.style.display = "none";
+  installTitle.textContent = "Setting up remove-bg-local";
+  const mb = SIZES[model];
+  installMsg.innerHTML = `Downloading the <span class="em">${MODELS[model] || model}</span> model` +
+    (mb ? ` (~<span class="em">${mb} MB</span>)` : "") + " for the first time…";
+  overlay.classList.add("show");
+  let t0 = Date.now();
+  clearInterval(installTimerInt);
+  installTimerInt = setInterval(() => {
+    installTimer.textContent = Math.round((Date.now() - t0) / 1000) + "s";
+  }, 1000);
+}
+function hideOverlay() {
+  overlay.classList.remove("show");
+  clearInterval(installTimerInt);
+}
+function overlayError(msg) {
+  installBox.classList.add("error");
+  installTitle.textContent = "Could not download the model";
+  installMsg.textContent = msg + ". Check your internet connection and try again.";
+  installRetry.style.display = "inline-block";
+  clearInterval(installTimerInt);
+}
+installRetry.addEventListener("click", () => initInstall());
+
+async function initInstall() {
+  try {
+    const s = await getStatus(DEFAULT_MODEL);
+    if (s.state === "ready") { hideOverlay(); setStatus("ready"); return; }
+    showOverlay(DEFAULT_MODEL);
+    setStatus("downloading model…", true);
+    await waitForModel(DEFAULT_MODEL);
+    hideOverlay();
+    setStatus("ready");
+    toast("Model ready — drop an image to start", "ok");
+  } catch (e) {
+    overlayError(e.message || "Download error");
+    setStatus("model error");
+  }
+}
+
+// --- Drag and drop / paste / file picker ---------------------------------
+drop.addEventListener("click", () => fileInput.click());
+fileInput.addEventListener("change", (e) => {
+  if (e.target.files.length) enqueue([...e.target.files]);
+  fileInput.value = "";
+});
+["dragenter", "dragover"].forEach(ev =>
+  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("dragover"); })
+);
+["dragleave", "drop"].forEach(ev =>
+  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove("dragover"); })
+);
+drop.addEventListener("drop", (e) => {
+  const files = [...(e.dataTransfer.files || [])];
+  if (files.length) enqueue(files);
+});
 document.addEventListener("paste", (e) => {
+  const imgs = [];
   for (const item of e.clipboardData.items) {
     if (item.type.startsWith("image/")) {
       const f = item.getAsFile();
-      if (f) handleFile(f);
-      break;
+      if (f) imgs.push(f);
     }
   }
+  if (imgs.length) enqueue(imgs);
 });
 
-// --- Process -------------------------------------------------------------
-async function handleFile(file) {
-  if (!file.type.startsWith("image/")) {
-    toast("That is not an image", "err");
-    return;
+// --- Queue ---------------------------------------------------------------
+function enqueue(files) {
+  let added = 0;
+  for (const f of files) {
+    if (!f.type.startsWith("image/")) { toast(`Skipped "${f.name}" (not an image)`, "err"); continue; }
+    const job = {
+      id: ++jobSeq,
+      file: f,
+      name: f.name || `image-${jobSeq}.png`,
+      model: modelSel.value,
+      state: "queued",
+      inUrl: URL.createObjectURL(f),
+      sizeKB: (f.size / 1024).toFixed(0),
+      outUrl: null, outBlob: null, outName: null, ms: null, err: null,
+    };
+    jobs.push(job);
+    added++;
   }
-  // Preview the original
-  const inUrl = URL.createObjectURL(file);
-  bodyIn.classList.remove("empty");
-  bodyIn.innerHTML = `<img src="${inUrl}" alt="Original" />`;
-  metaIn.textContent = `${file.name} - ${(file.size/1024).toFixed(0)} KB`;
+  if (added) { renderAll(); pump(); }
+}
 
-  // Show spinner in the output panel
-  bodyOut.classList.remove("empty");
-  bodyOut.innerHTML = `<div class="spinner"></div>`;
-  metaOut.textContent = "";
-  downloadBtn.disabled = true;
+async function pump() {
+  if (processing) return;
+  const job = jobs.find(j => j.state === "queued");
+  if (!job) { setStatus("ready"); renderAll(); return; }
+  processing = true;
+  try {
+    await runJob(job);
+  } catch (e) {
+    job.state = "error";
+    job.err = e.message || "Error";
+    toast(job.err, "err");
+  } finally {
+    processing = false;
+    renderAll();
+    pump(); // next in line
+  }
+}
 
-  setStatus("processing...", true);
+async function runJob(job) {
   const t0 = performance.now();
 
+  // Make sure the model is ready (download if needed) before sending.
+  let st = await getStatus(job.model);
+  if (st.state !== "ready") {
+    job.state = "loading-model";
+    renderAll();
+    setStatus(`downloading ${job.model}…`, true);
+    await waitForModel(job.model);
+  }
+
+  job.state = "processing";
+  renderAll();
+  setStatus("processing…", true);
+
   const fd = new FormData();
-  fd.append("image", file);
-  fd.append("model", modelSel.value);
+  fd.append("image", job.file);
+  fd.append("model", job.model);
   if ($("am-enabled").checked) {
     fd.append("alpha_matting", "true");
     fd.append("alpha_matting_foreground_threshold", $("am-fg").value);
@@ -410,57 +563,130 @@ async function handleFile(file) {
     fd.append("alpha_matting_erode_size", $("am-erode").value);
   }
 
-  try {
-    const r = await fetch("/remove", { method: "POST", body: fd });
-    if (!r.ok) {
-      let detail = "Server error";
-      try { detail = (await r.json()).detail || detail; } catch {}
-      throw new Error(detail);
-    }
-    const blob = await r.blob();
-    if (lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
-    lastBlobUrl = URL.createObjectURL(blob);
-    lastFilename = file.name.replace(/\.[^.]+$/, "") + "_nobg.png";
-
-    bodyOut.innerHTML = `<img src="${lastBlobUrl}" alt="No background" />`;
-    const elapsed = ((performance.now() - t0) / 1000).toFixed(2);
-    const serverTime = r.headers.get("X-Processing-Time") || elapsed;
-    metaOut.textContent = `${(blob.size/1024).toFixed(0)} KB - ${serverTime}s`;
-    downloadBtn.disabled = false;
-    setStatus(`done (${elapsed}s)`);
-    toast("Done", "ok");
-  } catch (err) {
-    bodyOut.innerHTML = "";
-    bodyOut.classList.add("empty");
-    setStatus("error");
-    toast(err.message || "Error", "err");
+  const r = await fetch("/remove", { method: "POST", body: fd });
+  if (!r.ok) {
+    let detail = "Server error";
+    try { detail = (await r.json()).detail || detail; } catch {}
+    throw new Error(detail);
   }
+  const blob = await r.blob();
+  job.outBlob = blob;
+  job.outUrl = URL.createObjectURL(blob);
+  job.outName = job.name.replace(/\.[^.]+$/, "") + "_nobg.png";
+  job.outKB = (blob.size / 1024).toFixed(0);
+  job.ms = r.headers.get("X-Processing-Time") || ((performance.now() - t0) / 1000).toFixed(2);
+  job.state = "done";
 }
 
-// --- Download ------------------------------------------------------------
-downloadBtn.addEventListener("click", () => {
-  if (!lastBlobUrl) return;
+// --- Render --------------------------------------------------------------
+const BADGE_TEXT = {
+  queued: "Queued",
+  "loading-model": "Downloading model…",
+  processing: "Processing…",
+  done: "Done",
+  error: "Error",
+};
+
+function renderAll() {
+  queueEl.innerHTML = "";
+  // newest first
+  for (let i = jobs.length - 1; i >= 0; i--) {
+    queueEl.appendChild(renderCard(jobs[i]));
+  }
+  const doneCount = jobs.filter(j => j.state === "done").length;
+  const pending = jobs.filter(j => j.state === "queued" || j.state === "processing" || j.state === "loading-model").length;
+  downloadAllBtn.disabled = doneCount === 0;
+  clearBtn.disabled = jobs.length === 0;
+  queueInfo.textContent = jobs.length
+    ? `${doneCount} done${pending ? ` · ${pending} in queue` : ""}`
+    : "";
+}
+
+function renderCard(job) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const head = document.createElement("div");
+  head.className = "card-head";
+  const metaRight = job.state === "done"
+    ? `<span class="meta">${job.outKB} KB · ${job.ms}s</span>`
+    : "";
+  head.innerHTML =
+    `<span class="name" title="${job.name}">${job.name}</span>` +
+    `<span class="right">${metaRight}<span class="badge ${job.state}">${BADGE_TEXT[job.state]}</span></span>`;
+  card.appendChild(head);
+
+  const pair = document.createElement("div");
+  pair.className = "pair";
+
+  const inCell = document.createElement("div");
+  inCell.className = "cell";
+  inCell.innerHTML = `<span class="label">Original</span><img src="${job.inUrl}" alt="Original" />`;
+  pair.appendChild(inCell);
+
+  const outCell = document.createElement("div");
+  outCell.className = "cell";
+  if (job.state === "done") {
+    outCell.innerHTML = `<span class="label">No background</span><img src="${job.outUrl}" alt="No background" />`;
+  } else if (job.state === "error") {
+    outCell.innerHTML = `<span class="label">No background</span><div class="errmsg">${job.err || "Error"}</div>`;
+  } else if (job.state === "queued") {
+    outCell.innerHTML = `<span class="label">No background</span><div class="placeholder">Waiting…</div>`;
+  } else {
+    outCell.innerHTML = `<span class="label">No background</span><div class="spinner"></div>`;
+  }
+  pair.appendChild(outCell);
+  card.appendChild(pair);
+
+  if (job.state === "done") {
+    const row = document.createElement("div");
+    row.className = "btn-row";
+    const btn = document.createElement("button");
+    btn.className = "primary";
+    btn.textContent = "Download PNG";
+    btn.addEventListener("click", () => downloadJob(job));
+    row.appendChild(btn);
+    card.appendChild(row);
+  }
+  return card;
+}
+
+function downloadJob(job) {
+  if (!job.outUrl) return;
   const a = document.createElement("a");
-  a.href = lastBlobUrl;
-  a.download = lastFilename;
+  a.href = job.outUrl;
+  a.download = job.outName;
   a.click();
+}
+
+downloadAllBtn.addEventListener("click", async () => {
+  const done = jobs.filter(j => j.state === "done");
+  for (const job of done) {
+    downloadJob(job);
+    await sleep(250); // give the browser time between downloads
+  }
 });
 
-// --- Reset ---------------------------------------------------------------
-resetBtn.addEventListener("click", () => {
-  bodyIn.innerHTML = "";
-  bodyOut.innerHTML = "";
-  bodyIn.classList.add("empty");
-  bodyOut.classList.add("empty");
-  metaIn.textContent = "";
-  metaOut.textContent = "";
-  downloadBtn.disabled = true;
-  if (lastBlobUrl) { URL.revokeObjectURL(lastBlobUrl); lastBlobUrl = null; }
-  fileInput.value = "";
-  setStatus("ready");
+clearBtn.addEventListener("click", () => {
+  for (const j of jobs) {
+    if (j.inUrl) URL.revokeObjectURL(j.inUrl);
+    if (j.outUrl) URL.revokeObjectURL(j.outUrl);
+  }
+  jobs = [];
+  renderAll();
+  setStatus(processing ? "processing…" : "ready", processing);
 });
 
-loadModels();
+// --- Boot ----------------------------------------------------------------
+(async function boot() {
+  try {
+    await loadModels();
+    await initInstall();
+  } catch (e) {
+    setStatus("server error");
+    toast("Could not reach the server", "err");
+  }
+})();
 </script>
 
 </body>
