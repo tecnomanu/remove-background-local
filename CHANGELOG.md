@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.11.0 — npm publish
+
+- First version published to npm (auto-published from the GitHub release via the
+  publish workflow using the NPM automation token)
+
 ## v1.10.0 — New logo & auto-refresh on update
 
 - New single brand logo (the rm. squircle) used as favicon and app/dock icon;
