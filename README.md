@@ -25,7 +25,9 @@ It ships with **ISNet** as the default (fast and high quality) and also includes
 - **Per-result background** to check contrast, independent of the global default
 - **First-run setup screen** with a real download progress bar
 - **Models page** in the top menu: what each model is best for, which ones are
-  downloaded, and a button to pre-download any of them (with progress)
+  downloaded, plus buttons to download or delete each one (with progress)
+- **Desktop app** — run it in a native window with `rm-bg desktop` (Electron)
+- **`rm-bg` command line** — start/stop, manage models and update from the terminal
 - Switch between 6 models depending on the case (general, portrait, lite, etc.)
 - Alpha matting mode for fine edges (hair, plants)
 - 100% local processing — your images never leave your machine
@@ -58,6 +60,13 @@ npx -y remove-background-local
 This bootstraps a Python environment, installs the dependencies and starts the
 server — then opens **http://127.0.0.1:7860** in your browser. (Node can't install
 Python itself, so Python 3.9+ must already be available.)
+
+Install it globally to get the `rm-bg` command everywhere, including the desktop app:
+
+```bash
+npm install -g remove-background-local
+rm-bg desktop     # native window, or: rm-bg web
+```
 
 ### Option B — from source
 
@@ -98,8 +107,19 @@ rm-bg update                  # update to the latest version
 rm-bg help                    # show all commands
 ```
 
-> **Desktop app:** `rm-bg desktop` shows the exact same UI in a native window.
-> The first run downloads Electron once into `~/.remove-background-local`.
+Background server state (the pidfile and logs) lives in `~/.remove-background-local/`.
+
+### Desktop app
+
+```bash
+rm-bg desktop
+```
+
+This opens the **same UI in a native window** (built with Electron): it starts the
+local server behind the scenes and shows it as a regular app, no browser tab needed.
+The first run downloads the Electron runtime once into `~/.remove-background-local/`
+(it is not bundled, to keep the base install small). Everything else — models,
+sessions, privacy — works exactly like the web version.
 
 ## Usage
 
@@ -225,14 +245,20 @@ rule that every commit must keep the tests green. CI runs the tests on every pus
 
 ```
 remove-background-local/
-├── server.py            # FastAPI backend
+├── server.py            # FastAPI backend (+ `models` CLI)
 ├── static/
 │   └── index.html       # Frontend (single file)
+├── bin/
+│   └── cli.js           # `rm-bg` launcher / subcommands
+├── electron/
+│   └── main.js          # Desktop app (Electron) main process
+├── package.json         # npm package (bin: rm-bg)
 ├── requirements.txt     # Python dependencies
 ├── requirements-dev.txt # Test dependencies
-├── run.sh               # Startup script
+├── run.sh               # Startup script (from source)
 ├── run_tests.sh         # Test runner
 ├── tests/               # pytest suite
+├── CHANGELOG.md         # Version history
 ├── AGENTS.md            # Guide for contributors / AI agents
 └── README.md            # This file
 ```
