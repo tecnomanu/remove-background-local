@@ -145,19 +145,24 @@ inference are monkeypatched. CI (`.github/workflows/tests.yml`) runs the same
    `description`) — this powers the Models page.
 4. `test_models_payload` will check the new entry has complete info. Run tests.
 
-## Release process
+## Versioning & releases (automated)
 
-1. Make sure tests pass: `./run_tests.sh`.
-2. Bump the version in **three** places so they stay in sync:
-   `package.json` (`version`), `server.py` (`FastAPI(version=...)`) and the
-   footer in `static/index.html` (`<b id="ver">`). Add a `CHANGELOG.md` entry.
-3. Commit, then tag and create the GitHub release:
-   ```bash
-   git tag vX.Y.Z && git push origin vX.Y.Z
-   gh release create vX.Y.Z --title "vX.Y.Z — ..." --notes "..."
-   ```
-4. **npm publish is automated:** the `publish` workflow runs on every published
-   GitHub release and pushes the `package.json` version to npm (needs the repo
-   secret `NPM_TOKEN`, an npm Automation token). First publish can also be done
-   manually (`npm login && npm publish`). `npm publish` fails if that version is
-   already on npm, so each release must carry a new `package.json` version.
+The version lives in **one place**: `package.json`. `server.py` reads it
+(`APP_VERSION`, exposed in `/health`) and the UI footer fills from `/health`.
+Never hardcode the version elsewhere.
+
+Releases are driven by **Conventional Commits** + **release-please**:
+
+1. Land commits on `main` using conventional prefixes:
+   - `fix: ...` -> patch (x.y.**Z**)
+   - `feat: ...` -> minor (x.**Y**.0)
+   - `feat!: ...` or a `BREAKING CHANGE:` footer -> major (**X**.0.0)
+   - `chore:/docs:/ci:/refactor:` -> no release on their own
+2. The **release-please** workflow opens/updates a "release PR" that bumps
+   `package.json` + `CHANGELOG.md`. Review and **merge it** when you want to ship.
+3. Merging creates the GitHub Release + tag, which fires the **publish** workflow
+   -> `npm publish` (needs the `NPM_TOKEN` repo secret, an npm **Automation**
+   token). The publish step skips if that version is already on npm.
+
+Manual fallback (rarely needed): bump `package.json`, `gh release create vX.Y.Z`,
+which still triggers publish. `npm login && npm publish` works too.
