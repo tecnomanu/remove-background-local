@@ -90,7 +90,7 @@
 
     "btn.copy": "Copiar",
 
-    "cta.h2": "Quita-fondos, <span class=\"accent\">de verdad tuyo</span>.",
+    "cta.h2": "Tu máquina. Tu herramienta. <span class=\"accent\">Tus imágenes.</span>",
     "cta.sub": "Sin límites, sin cuenta, sin API. Open source y gratis.",
     "cta.b1": "Ver en GitHub",
     "cta.b2": "Instalar",

@@ -45,13 +45,16 @@ code, .term-type, .codeblock code { font-family: "JetBrains Mono", ui-monospace,
 
 /* ░░░ nav ░░░ */
 .nav {
-  position: sticky; top: 0; z-index: 50;
-  display: flex; align-items: center; gap: 24px;
-  max-width: var(--max); margin: 0 auto; padding: 16px 24px;
-  transition: padding 0.3s, background 0.3s;
+  position: sticky; top: 0; z-index: 50; width: 100%;
+  transition: background 0.3s, border-color 0.3s;
 }
-.nav.scrolled { background: rgba(15,15,18,0.72); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); padding: 11px 24px; }
-.nav-wrap { position: sticky; top: 0; z-index: 50; }
+.nav.scrolled { background: rgba(15,15,18,0.72); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+.nav-inner {
+  max-width: var(--max); margin: 0 auto; padding: 16px 24px;
+  display: flex; align-items: center; gap: 24px;
+  transition: padding 0.3s;
+}
+.nav.scrolled .nav-inner { padding: 11px 24px; }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.01em; }
 .brand-logo { width: 34px; height: 34px; border-radius: 9px; }
 .brand-name { font-weight: 700; }
@@ -60,8 +63,17 @@ code, .term-type, .codeblock code { font-family: "JetBrains Mono", ui-monospace,
 .nav-links { display: flex; gap: 26px; margin-left: auto; font-size: 14px; }
 .nav-links a { color: var(--text-dim); transition: color 0.2s; }
 .nav-links a:hover { color: var(--text); }
-.nav-right { display: flex; align-items: center; gap: 12px; }
-.nav-cta { font-size: 14px; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.03em;
+  color: var(--text); background: var(--panel);
+  border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 12px;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.nav-cta:hover { border-color: var(--accent); background: var(--panel-2); color: #fff; }
+.nav-cta svg { width: 14px; height: 14px; }
 .lang-toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; overflow: hidden; background: var(--panel); }
 .lang-toggle button { background: none; border: 0; color: var(--text-dim); font-family: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.03em; padding: 6px 11px; cursor: pointer; transition: color 0.2s, background 0.2s; }
 .lang-toggle button.active { color: #fff; background: var(--accent); }
@@ -206,12 +218,12 @@ code, .term-type, .codeblock code { font-family: "JetBrains Mono", ui-monospace,
 .foot-brand .wm-local { color: var(--text-dim); font-weight: 400; }
 .foot-links { display: flex; gap: 22px; font-size: 14px; }
 .foot-links a { color: var(--text-dim); } .foot-links a:hover { color: var(--text); }
-.foot-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; margin-top: 22px; }
+.foot-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 20px; margin-top: 26px; }
 .foot-by { font-size: 13px; color: var(--text-dim); }
 .foot-by b { color: var(--text); font-weight: 600; }
 .foot-coffee { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text); border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; transition: border-color 0.2s, background 0.2s, transform 0.2s; }
 .foot-coffee:hover { border-color: var(--accent); background: var(--panel-2); transform: translateY(-1px); }
-.foot-note { color: var(--text-dim); font-size: 12.5px; margin: 18px 0 0; }
+.foot-note { color: var(--text-dim); font-size: 12.5px; margin: 14px 0 0; text-align: center; }
 
 /* ░░░ reveal animation base (GSAP toggles) ░░░ */
 [data-reveal], [data-stagger] { will-change: transform, opacity; }
