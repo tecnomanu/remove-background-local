@@ -86,7 +86,7 @@
       try {
         await navigator.clipboard.writeText(btn.getAttribute("data-copy") || "");
         const old = btn.textContent;
-        btn.textContent = "¡Copiado!";
+        btn.textContent = window.__rmbgCopied || "Copied!";
         btn.classList.add("done");
         setTimeout(() => { btn.textContent = old; btn.classList.remove("done"); }, 1600);
       } catch (_) {}
@@ -164,6 +164,16 @@
       y: 48, autoAlpha: 0, scale: 0.97, duration: 0.7, stagger: 0.09,
       scrollTrigger: { trigger: parent, start: "top 82%", toggleActions: "play none none reverse" },
     });
+  });
+
+  /* ── showcase rows: directional slide ── */
+  gsap.utils.toArray(".show-row").forEach((row) => {
+    const media = row.querySelector(".show-media");
+    const text = row.querySelector(".show-text");
+    const reversed = row.classList.contains("reverse");
+    const st = { trigger: row, start: "top 80%", toggleActions: "play none none reverse" };
+    gsap.from(media, { x: reversed ? 60 : -60, autoAlpha: 0, duration: 0.9, scrollTrigger: st });
+    gsap.from(text, { x: reversed ? -50 : 50, y: 16, autoAlpha: 0, duration: 0.9, scrollTrigger: st });
   });
 
   /* ── model speed bars fill ── */
