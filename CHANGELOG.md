@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.14.0](https://github.com/tecnomanu/remove-background-local/compare/v1.13.0...v1.14.0) (2026-06-05)
+
+
+### Features
+
+* animated landing site (GSAP) + GitHub Pages deploy ([0d24206](https://github.com/tecnomanu/remove-background-local/commit/0d24206115dd4c560ac7edfdb27d98fc6d9c4f3a))
+* **site:** inglés como idioma base + toggle ES, showcase alternado y footer con crédito/café ([4307d1e](https://github.com/tecnomanu/remove-background-local/commit/4307d1eee224a94cfe20434cfdc7ca8e6bfc2bb9))
+
+
+### Bug Fixes
+
+* **site:** nav rota a anchos intermedios + cache busting ([e266583](https://github.com/tecnomanu/remove-background-local/commit/e266583ddf5c1f054d160cbb0fc463b918926719))
+* **site:** wordmark 'rm.background local' (solo el punto en color) + reencuadre del antes/después ([acb30b9](https://github.com/tecnomanu/remove-background-local/commit/acb30b90ffecee6fd996069613b1ea5ab6b07822))
+
 ## [1.13.0](https://github.com/tecnomanu/remove-background-local/compare/v1.12.0...v1.13.0) (2026-06-04)
 
 
