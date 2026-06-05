@@ -161,14 +161,14 @@ code, .term-type, .codeblock code { font-family: "JetBrains Mono", ui-monospace,
 .promo:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 24px 60px -24px rgba(124,92,255,0.6); }
 
 /* ░░░ install ░░░ */
-.install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
-.inst-card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+.install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+.inst-card { display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
 .inst-card.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 24px 60px -30px rgba(124,92,255,0.7); }
 .inst-card header { margin-bottom: 16px; }
 .inst-tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-2); font-weight: 700; }
 .inst-card h3 { margin: 6px 0 0; font-size: 18px; }
 .inst-card h3 code, .inst-card p code { color: var(--accent-2); font-size: 0.85em; }
-.inst-card > p { color: var(--text-dim); font-size: 13.5px; margin: 14px 0 0; }
+.inst-card > p { color: var(--text-dim); font-size: 13.5px; margin: 0; margin-top: auto; padding-top: 14px; }
 .codeblock { position: relative; display: flex; align-items: center; gap: 8px; background: #0b0b0e; border: 1px solid var(--border); border-radius: 10px; padding: 11px 12px; margin-top: 10px; overflow: hidden; }
 .codeblock code { font-size: 12.5px; white-space: nowrap; overflow-x: auto; flex: 1; color: var(--text); scrollbar-width: none; }
 .codeblock code::-webkit-scrollbar { display: none; }
