@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/tecnomanu/remove-background-local/compare/v1.14.0...v1.15.0) (2026-06-10)
+
+
+### Features
+
+* **site:** SEO social preview con screenshot.webp ([018762e](https://github.com/tecnomanu/remove-background-local/commit/018762e481a9a5f73465f2461a9c0ad1c43c054c))
+
 ## [1.14.0](https://github.com/tecnomanu/remove-background-local/compare/v1.13.0...v1.14.0) (2026-06-05)
 
 
