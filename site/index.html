@@ -1,366 +1,1025 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>rm.background local — Remove backgrounds locally</title>
-<meta name="description" content="Remove image backgrounds 100% locally and privately. No internet, no cloud, no accounts, no API. Web + Desktop, open source." />
-<link rel="canonical" href="https://tecnomanu.github.io/remove-background-local/" />
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>rm.background local — Remove backgrounds locally</title>
+		<meta
+			name="description"
+			content="Remove image backgrounds 100% locally and privately. No internet, no cloud, no accounts, no API. Web + Desktop, open source." />
+		<link
+			rel="canonical"
+			href="https://tecnomanu.github.io/remove-background-local/" />
 
-<!-- Open Graph -->
-<meta property="og:title" content="rm.background local — Remove backgrounds locally" />
-<meta property="og:description" content="AI-powered background removal that runs entirely on your machine. No uploads, no cloud, 100% yours. Open source." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://tecnomanu.github.io/remove-background-local/" />
-<meta property="og:site_name" content="rm.background local" />
-<meta property="og:locale" content="en_US" />
-<meta property="og:image" content="https://tecnomanu.github.io/remove-background-local/assets/screenshot.jpg?v=2" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:image:type" content="image/jpeg" />
-<meta property="og:image:alt" content="rm.background local — Remove backgrounds locally and privately. AI-powered, offline, open source. No uploads, no cloud." />
+		<!-- Open Graph -->
+		<meta
+			property="og:title"
+			content="rm.background local — Remove backgrounds locally" />
+		<meta
+			property="og:description"
+			content="AI-powered background removal that runs entirely on your machine. No uploads, no cloud, 100% yours. Open source." />
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:url"
+			content="https://tecnomanu.github.io/remove-background-local/" />
+		<meta property="og:site_name" content="rm.background local" />
+		<meta property="og:locale" content="en_US" />
+		<meta
+			property="og:image"
+			content="https://tecnomanu.github.io/remove-background-local/assets/screenshot.jpg?v=2" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta
+			property="og:image:alt"
+			content="rm.background local — Remove backgrounds locally and privately. AI-powered, offline, open source. No uploads, no cloud." />
 
-<!-- Twitter / X -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@tecnomanu" />
-<meta name="twitter:title" content="rm.background local — Remove backgrounds locally" />
-<meta name="twitter:description" content="AI-powered background removal that runs entirely on your machine. No uploads, no cloud, 100% yours." />
-<meta name="twitter:image" content="https://tecnomanu.github.io/remove-background-local/assets/screenshot.jpg?v=2" />
-<meta name="twitter:image:alt" content="rm.background local — Remove backgrounds locally and privately. AI-powered, offline, open source." />
-<meta name="theme-color" content="#0f0f12" />
+		<!-- Twitter / X -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@tecnomanu" />
+		<meta
+			name="twitter:title"
+			content="rm.background local — Remove backgrounds locally" />
+		<meta
+			name="twitter:description"
+			content="AI-powered background removal that runs entirely on your machine. No uploads, no cloud, 100% yours." />
+		<meta
+			name="twitter:image"
+			content="https://tecnomanu.github.io/remove-background-local/assets/screenshot.jpg?v=2" />
+		<meta
+			name="twitter:image:alt"
+			content="rm.background local — Remove backgrounds locally and privately. AI-powered, offline, open source." />
+		<meta name="theme-color" content="#0f0f12" />
 
-<link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32x32.png" />
-<link rel="icon" type="image/png" href="./assets/logo.png" />
-<link rel="apple-touch-icon" href="./assets/logo.png" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="./assets/favicon-32x32.png" />
+		<link rel="icon" type="image/png" href="./assets/logo.png" />
+		<link rel="apple-touch-icon" href="./assets/logo.png" />
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "rm.background local",
-  "url": "https://tecnomanu.github.io/remove-background-local/",
-  "image": "https://tecnomanu.github.io/remove-background-local/assets/screenshot.jpg?v=2",
-  "description": "AI-powered background removal that runs entirely on your machine. No uploads, no cloud, 100% yours. Open source.",
-  "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "Windows, macOS, Linux",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Person", "name": "Manuel Bruña", "url": "https://github.com/tecnomanu" }
-}
-</script>
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "SoftwareApplication",
+				"name": "rm.background local",
+				"url": "https://tecnomanu.github.io/remove-background-local/",
+				"image": "https://tecnomanu.github.io/remove-background-local/assets/screenshot.jpg?v=2",
+				"description": "AI-powered background removal that runs entirely on your machine. No uploads, no cloud, 100% yours. Open source.",
+				"applicationCategory": "MultimediaApplication",
+				"operatingSystem": "Windows, macOS, Linux",
+				"offers": {
+					"@type": "Offer",
+					"price": "0",
+					"priceCurrency": "USD"
+				},
+				"author": {
+					"@type": "Person",
+					"name": "Manuel Bruña",
+					"url": "https://github.com/tecnomanu"
+				}
+			}
+		</script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
+			rel="stylesheet" />
 
-<link rel="stylesheet" href="./styles.css?v=5" />
-</head>
-<body>
+		<link rel="stylesheet" href="./styles.css?v=12" />
+	</head>
+	<body>
+		<!-- ░░░ animated backdrop ░░░ -->
+		<div class="backdrop" aria-hidden="true">
+			<div class="orb orb-1"></div>
+			<div class="orb orb-2"></div>
+			<div class="orb orb-3"></div>
+			<div class="grid-glow"></div>
+		</div>
 
-<!-- ░░░ animated backdrop ░░░ -->
-<div class="backdrop" aria-hidden="true">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="grid-glow"></div>
-</div>
+		<!-- ░░░ nav ░░░ -->
+		<header class="nav" id="nav">
+			<div class="nav-inner">
+				<a
+					class="brand"
+					href="#top"
+					aria-label="rm.background local home">
+					<img src="./assets/logo.png" alt="" class="brand-logo" />
+					<span class="brand-name"
+						>rm<span class="wm-dot">.</span>background<span
+							class="wm-local">
+							local</span
+						></span
+					>
+				</a>
+				<nav class="nav-links">
+					<a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+					<a href="#features" data-i18n="nav.features">Features</a>
+					<a href="#models" data-i18n="nav.models">Models</a>
+					<a href="#install" data-i18n="nav.install">Install</a>
+				</nav>
+				<div class="nav-right">
+					<div
+						class="lang-toggle"
+						id="langToggle"
+						role="group"
+						aria-label="Language / Idioma">
+						<button type="button" data-lang="en">EN</button>
+						<button type="button" data-lang="es">ES</button>
+					</div>
+					<a
+						class="nav-cta"
+						href="https://github.com/tecnomanu/remove-background-local"
+						target="_blank"
+						rel="noopener"
+						aria-label="GitHub">
+						<svg
+							viewBox="0 0 24 24"
+							width="14"
+							height="14"
+							aria-hidden="true">
+							<path
+								fill="currentColor"
+								d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.41-1.27.74-1.56-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.25 5.69.42.37.8 1.1.8 2.22v3.29c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z" />
+						</svg>
+						GitHub
+					</a>
+				</div>
+			</div>
+		</header>
 
-<!-- ░░░ nav ░░░ -->
-<header class="nav" id="nav">
-  <div class="nav-inner">
-    <a class="brand" href="#top" aria-label="rm.background local home">
-      <img src="./assets/logo.png" alt="" class="brand-logo" />
-      <span class="brand-name">rm<span class="wm-dot">.</span>background<span class="wm-local"> local</span></span>
-    </a>
-    <nav class="nav-links">
-      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
-      <a href="#features" data-i18n="nav.features">Features</a>
-      <a href="#models" data-i18n="nav.models">Models</a>
-      <a href="#install" data-i18n="nav.install">Install</a>
-    </nav>
-    <div class="nav-right">
-      <div class="lang-toggle" id="langToggle" role="group" aria-label="Language / Idioma">
-        <button type="button" data-lang="en">EN</button>
-        <button type="button" data-lang="es">ES</button>
-      </div>
-      <a class="nav-cta" href="https://github.com/tecnomanu/remove-background-local" target="_blank" rel="noopener" aria-label="GitHub">
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.41-1.27.74-1.56-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.69 5.41-5.25 5.69.42.37.8 1.1.8 2.22v3.29c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
-        GitHub
-      </a>
-    </div>
-  </div>
-</header>
+		<main id="top">
+			<!-- ░░░ HERO ░░░ -->
+			<section class="hero">
+				<div class="hero-copy">
+					<h1 class="hero-title">
+						<span class="line" data-word data-i18n="hero.t1"
+							>Remove backgrounds</span
+						>
+						<span class="line accent" data-word data-i18n="hero.t2"
+							>completely locally</span
+						>
+						<span class="line" data-word data-i18n="hero.t3"
+							>and for free.</span
+						>
+					</h1>
+					<p class="hero-sub" data-reveal data-i18n="hero.sub">
+						An offline alternative to remove.bg that runs
+						<b>entirely on your machine</b>. Your images never leave
+						your PC. No cloud, no accounts, no API.
+					</p>
 
-<main id="top">
+					<div class="hero-cta" data-reveal>
+						<a class="btn btn-primary" href="#install">
+							<svg
+								viewBox="0 0 24 24"
+								width="18"
+								height="18"
+								aria-hidden="true">
+								<path
+									fill="currentColor"
+									d="M5 20h14v-2H5v2zM12 2 6 8h4v6h4V8h4l-6-6z"
+									transform="rotate(180 12 11)" />
+							</svg>
+							<span data-i18n="hero.cta1">Install now</span>
+						</a>
+						<a
+							class="btn btn-ghost"
+							href="https://github.com/tecnomanu/remove-background-local"
+							target="_blank"
+							rel="noopener"
+							data-i18n="hero.cta2"
+							>View on GitHub →</a
+						>
+					</div>
 
-  <!-- ░░░ HERO ░░░ -->
-  <section class="hero">
-    <div class="hero-copy">
-      <span class="pill-badge" data-reveal>
-        <span class="dot"></span> <span data-i18n="hero.badge">100% local · open source</span>
-      </span>
-      <h1 class="hero-title">
-        <span class="line" data-word data-i18n="hero.t1">Remove backgrounds</span>
-        <span class="line accent" data-word data-i18n="hero.t2">without uploading</span>
-        <span class="line" data-word data-i18n="hero.t3">anything online</span>
-      </h1>
-      <p class="hero-sub" data-reveal data-i18n="hero.sub">
-        An offline alternative to remove.bg that runs <b>entirely on your machine</b>.
-        Your images never leave your PC. No cloud, no accounts, no API.
-      </p>
+					<div class="hero-term" data-reveal aria-hidden="true">
+						<div class="term-bar">
+							<span></span><span></span><span></span>
+						</div>
+						<code class="term-line"
+							><span class="term-prompt">$</span>
+							<span
+								class="term-type"
+								data-type="npm install -g remove-background-local"></span
+							><span class="term-cursor">▋</span></code
+						>
+					</div>
+				</div>
 
-      <div class="hero-cta" data-reveal>
-        <a class="btn btn-primary" href="#install">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M5 20h14v-2H5v2zM12 2 6 8h4v6h4V8h4l-6-6z" transform="rotate(180 12 11)"/></svg>
-          <span data-i18n="hero.cta1">Install now</span>
-        </a>
-        <a class="btn btn-ghost" href="https://github.com/tecnomanu/remove-background-local" target="_blank" rel="noopener" data-i18n="hero.cta2">View on GitHub →</a>
-      </div>
+				<!-- interactive before/after -->
+				<div class="hero-demo" data-reveal>
+					<div class="ba" id="ba">
+						<img
+							class="ba-after"
+							id="baAfter"
+							src="./assets/dog-despues-high.png"
+							alt="Dog with the background removed (transparent)"
+							draggable="false" />
+						<img
+							class="ba-before"
+							id="baBefore"
+							src="./assets/dog-antes.jpg"
+							alt="Dog with original background"
+							draggable="false" />
+						<div
+							class="ba-label ba-label-before"
+							data-i18n="ba.before">
+							Before
+						</div>
+						<div
+							class="ba-label ba-label-after"
+							data-i18n="ba.after">
+							After
+						</div>
+						<div
+							class="ba-handle"
+							id="baHandle"
+							role="slider"
+							aria-label="Compare before and after"
+							aria-valuemin="0"
+							aria-valuemax="100"
+							aria-valuenow="50"
+							tabindex="0">
+							<svg
+								viewBox="0 0 24 24"
+								width="20"
+								height="20"
+								aria-hidden="true">
+								<path
+									fill="currentColor"
+									d="M9 7 4 12l5 5V7zm6 0v10l5-5-5-5z" />
+							</svg>
+						</div>
+					</div>
+					<div
+						class="ba-bg-picker"
+						id="baBgPicker"
+						role="group"
+						aria-label="Result background">
+						<span class="ba-bg-label" data-i18n="ba.bgLabel"
+							>Background</span
+						>
+						<div class="ba-bg-swatches">
+							<button
+								type="button"
+								class="ba-swatch ba-swatch-checker active"
+								data-bg="checker"
+								aria-label="Transparent"
+								title="Transparent"></button>
+							<button
+								type="button"
+								class="ba-swatch"
+								data-bg="#ffffff"
+								style="background: #ffffff"
+								aria-label="White"
+								title="White"></button>
+							<button
+								type="button"
+								class="ba-swatch"
+								data-bg="#000000"
+								style="background: #000000"
+								aria-label="Black"
+								title="Black"></button>
+							<button
+								type="button"
+								class="ba-swatch"
+								data-bg="#808080"
+								style="background: #808080"
+								aria-label="Gray"
+								title="Gray"></button>
+							<button
+								type="button"
+								class="ba-swatch"
+								data-bg="#3ddc97"
+								style="background: #3ddc97"
+								aria-label="Green"
+								title="Green"></button>
+							<button
+								type="button"
+								class="ba-swatch"
+								data-bg="#5b8def"
+								style="background: #5b8def"
+								aria-label="Blue"
+								title="Blue"></button>
+							<button
+								type="button"
+								class="ba-swatch"
+								data-bg="#7c5cff"
+								style="background: #7c5cff"
+								aria-label="Purple"
+								title="Purple"></button>
+							<label
+								class="ba-swatch ba-swatch-custom"
+								title="Custom color">
+								<input
+									type="color"
+									id="baBgCustom"
+									value="#ff8800"
+									aria-label="Custom color" />
+							</label>
+							<div
+								class="ba-quality"
+								id="baQuality"
+								role="group"
+								aria-label="Output quality">
+								<button
+									type="button"
+									class="ba-quality-btn active"
+									data-quality="high"
+									data-i18n="ba.qualityHigh">
+									High
+								</button>
+								<button
+									type="button"
+									class="ba-quality-btn"
+									data-quality="low"
+									data-i18n="ba.qualityLow">
+									Low
+								</button>
+							</div>
+						</div>
+					</div>
+					<p class="ba-caption" data-i18n="ba.caption">
+						Drag to compare · real model output
+					</p>
+				</div>
+			</section>
 
-      <div class="hero-term" data-reveal aria-hidden="true">
-        <div class="term-bar"><span></span><span></span><span></span></div>
-        <code class="term-line"><span class="term-prompt">$</span> <span class="term-type" data-type="npm install -g remove-background-local"></span><span class="term-cursor">▋</span></code>
-      </div>
-    </div>
+			<!-- ░░░ PRIVACY ░░░ -->
+			<section class="section privacy" id="privacy">
+				<div class="section-head" data-reveal>
+					<h2 data-i18n="priv.h2">
+						Everything runs on your PC.
+						<span class="accent">100% local and private.</span>
+					</h2>
+					<p data-i18n="priv.sub">
+						Your images are never uploaded to external servers.
+						Ever.
+					</p>
+				</div>
+				<div class="pills">
+					<article class="priv-card" data-stagger>
+						<div class="priv-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round"
+									d="M2 8.8a15 15 0 0 1 20 0M5 12.4a10 10 0 0 1 14 0M8.2 15.9a5 5 0 0 1 7.6 0" />
+								<circle
+									cx="12"
+									cy="19.5"
+									r="1.4"
+									fill="currentColor" />
+								<line
+									x1="3"
+									y1="3"
+									x2="21"
+									y2="21"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round" />
+							</svg>
+						</div>
+						<h3 data-i18n="priv.c1t">No internet</h3>
+						<p data-i18n="priv.c1p">
+							Works offline, even in airplane mode.
+						</p>
+					</article>
+					<article class="priv-card" data-stagger>
+						<div class="priv-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M6.5 19a4.5 4.5 0 0 1-.5-8.97A6 6 0 0 1 17.7 9.2 4 4 0 0 1 17.5 19h-11Z" />
+								<line
+									x1="3"
+									y1="3"
+									x2="21"
+									y2="21"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round" />
+							</svg>
+						</div>
+						<h3 data-i18n="priv.c2t">No cloud</h3>
+						<p data-i18n="priv.c2p">100% on-device processing.</p>
+					</article>
+					<article class="priv-card" data-stagger>
+						<div class="priv-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<circle
+									cx="12"
+									cy="8"
+									r="3.4"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8" />
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round"
+									d="M5.5 19a6.5 6.5 0 0 1 13 0" />
+								<line
+									x1="3"
+									y1="3"
+									x2="21"
+									y2="21"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round" />
+							</svg>
+						</div>
+						<h3 data-i18n="priv.c3t">No accounts</h3>
+						<p data-i18n="priv.c3p">
+							No sign-up required to use it.
+						</p>
+					</article>
+					<article class="priv-card" data-stagger>
+						<div class="priv-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m7 14-3 3 2 2 3-3m6-6 3-3-2-2-3 3" />
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round"
+									d="m9.5 9.5 5 5" />
+								<line
+									x1="3"
+									y1="3"
+									x2="21"
+									y2="21"
+									stroke="currentColor"
+									stroke-width="1.8"
+									stroke-linecap="round" />
+							</svg>
+						</div>
+						<h3 data-i18n="priv.c4t">No API</h3>
+						<p data-i18n="priv.c4p">No keys. No third parties.</p>
+					</article>
+				</div>
+			</section>
 
-    <!-- interactive before/after -->
-    <div class="hero-demo" data-reveal>
-      <div class="ba" id="ba">
-        <img class="ba-after" src="./assets/dog-despues.png" alt="Dog with the background removed (transparent)" draggable="false" />
-        <img class="ba-before" id="baBefore" src="./assets/dog-antes.jpg" alt="Dog with original background" draggable="false" />
-        <div class="ba-label ba-label-before" data-i18n="ba.before">Before</div>
-        <div class="ba-label ba-label-after" data-i18n="ba.after">After</div>
-        <div class="ba-handle" id="baHandle" role="slider" aria-label="Compare before and after" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" tabindex="0">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M9 7 4 12l5 5V7zm6 0v10l5-5-5-5z"/></svg>
-        </div>
-      </div>
-      <p class="ba-caption" data-i18n="ba.caption">Drag to compare · real model output</p>
-    </div>
-  </section>
+			<!-- ░░░ FEATURES ░░░ -->
+			<section class="section" id="features">
+				<div class="section-head" data-reveal>
+					<h2 data-i18n="feat.h2">
+						Built for <span class="accent">real work</span>
+					</h2>
+					<p data-i18n="feat.sub">
+						From one image to hundreds. No limits on count or
+						resolution.
+					</p>
+				</div>
+				<div class="feature-grid">
+					<article class="feature" data-stagger>
+						<div class="f-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<rect
+									x="3"
+									y="4"
+									width="18"
+									height="4"
+									rx="1.2"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7" />
+								<rect
+									x="3"
+									y="10"
+									width="18"
+									height="4"
+									rx="1.2"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7" />
+								<rect
+									x="3"
+									y="16"
+									width="18"
+									height="4"
+									rx="1.2"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7" />
+							</svg>
+						</div>
+						<h3 data-i18n="feat.c1t">Processing queue</h3>
+						<p data-i18n="feat.c1p">
+							Drop several images at once and they process one by
+							one. Each result in its own card — nothing gets
+							overwritten.
+						</p>
+					</article>
+					<article class="feature" data-stagger>
+						<div class="f-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7L9 5H6a2 2 0 0 0-2 2Z" />
+								<circle
+									cx="12"
+									cy="13"
+									r="2.5"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7" />
+							</svg>
+						</div>
+						<h3 data-i18n="feat.c2t">Persistent sessions</h3>
+						<p data-i18n="feat.c2p">
+							Your results are saved locally and grouped into
+							sessions. They survive reloads until you delete
+							them.
+						</p>
+					</article>
+					<article class="feature" data-stagger>
+						<div class="f-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14" />
+							</svg>
+						</div>
+						<h3 data-i18n="feat.c3t">PNG · WEBP · JPG</h3>
+						<p data-i18n="feat.c3p">
+							Download in any format, with a transparent
+							background or a solid color. Per image or all at
+							once.
+						</p>
+					</article>
+					<article class="feature" data-stagger>
+						<div class="f-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M9 3a4 4 0 0 0-4 4 3.5 3.5 0 0 0-1 6.5A3.5 3.5 0 0 0 7 20a3 3 0 0 0 5 0 3 3 0 0 0 5 0 3.5 3.5 0 0 0 3-6.5A3.5 3.5 0 0 0 19 7a4 4 0 0 0-4-4 3 3 0 0 0-6 0Z" />
+							</svg>
+						</div>
+						<h3 data-i18n="feat.c4t">6 models</h3>
+						<p data-i18n="feat.c4p">
+							ISNet by default (fast and great) and BiRefNet 2024
+							for maximum quality. Pick per use case.
+						</p>
+					</article>
+					<article class="feature" data-stagger>
+						<div class="f-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="m13 2-9 11h6l-1 9 9-11h-6l1-9Z" />
+							</svg>
+						</div>
+						<h3 data-i18n="feat.c5t">Alpha matting</h3>
+						<p data-i18n="feat.c5p">
+							Fine-edge mode for hair, plants and meshes. Tune the
+							thresholds for surgical results.
+						</p>
+					</article>
+					<article class="feature" data-stagger>
+						<div class="f-ico">
+							<svg viewBox="0 0 24 24" aria-hidden="true">
+								<rect
+									x="3"
+									y="4"
+									width="18"
+									height="12"
+									rx="1.5"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7" />
+								<path
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.7"
+									stroke-linecap="round"
+									d="M8 20h8" />
+							</svg>
+						</div>
+						<h3 data-i18n="feat.c6t">Web + Desktop</h3>
+						<p data-i18n="feat.c6p">
+							Use it in the browser or as a native app with
+							<code>rm-bg desktop</code> (Electron). Same UI, no
+							browser tabs.
+						</p>
+					</article>
+				</div>
+			</section>
 
-  <!-- ░░░ PRIVACY ░░░ -->
-  <section class="section privacy" id="privacy">
-    <div class="section-head" data-reveal>
-      <h2 data-i18n="priv.h2">Everything runs on your PC. <span class="accent">100% local and private.</span></h2>
-      <p data-i18n="priv.sub">Your images are never uploaded to external servers. Ever.</p>
-    </div>
-    <div class="pills">
-      <article class="priv-card" data-stagger>
-        <div class="priv-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M2 8.8a15 15 0 0 1 20 0M5 12.4a10 10 0 0 1 14 0M8.2 15.9a5 5 0 0 1 7.6 0"/><circle cx="12" cy="19.5" r="1.4" fill="currentColor"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h3 data-i18n="priv.c1t">No internet</h3>
-        <p data-i18n="priv.c1p">Works offline, even in airplane mode.</p>
-      </article>
-      <article class="priv-card" data-stagger>
-        <div class="priv-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M6.5 19a4.5 4.5 0 0 1-.5-8.97A6 6 0 0 1 17.7 9.2 4 4 0 0 1 17.5 19h-11Z"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h3 data-i18n="priv.c2t">No cloud</h3>
-        <p data-i18n="priv.c2p">100% on-device processing.</p>
-      </article>
-      <article class="priv-card" data-stagger>
-        <div class="priv-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M5.5 19a6.5 6.5 0 0 1 13 0"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h3 data-i18n="priv.c3t">No accounts</h3>
-        <p data-i18n="priv.c3p">No sign-up required to use it.</p>
-      </article>
-      <article class="priv-card" data-stagger>
-        <div class="priv-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m7 14-3 3 2 2 3-3m6-6 3-3-2-2-3 3"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="m9.5 9.5 5 5"/><line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </div>
-        <h3 data-i18n="priv.c4t">No API</h3>
-        <p data-i18n="priv.c4p">No keys. No third parties.</p>
-      </article>
-    </div>
-  </section>
+			<!-- ░░░ MODELS ░░░ -->
+			<section class="section models" id="models">
+				<div class="section-head" data-reveal>
+					<h2 data-i18n="mod.h2">
+						Choose <span class="accent">speed or quality</span>
+					</h2>
+					<p data-i18n="mod.sub">
+						Approximate time per image on Apple Silicon (CPU).
+					</p>
+				</div>
+				<div class="model-table" data-reveal>
+					<div class="mt-row mt-head">
+						<span data-i18n="mod.col1">Model</span
+						><span data-i18n="mod.col2">When to use it</span
+						><span data-i18n="mod.col3">Speed</span>
+					</div>
+					<div class="mt-row" data-stagger>
+						<span
+							><code>isnet-general-use</code
+							><em class="tag-default">default</em></span
+						><span data-i18n="mod.r1"
+							>Fast and great quality for any image.</span
+						><span class="speed"><i style="--w: 96%"></i>~1s</span>
+					</div>
+					<div class="mt-row" data-stagger>
+						<span><code>u2net</code></span
+						><span data-i18n="mod.r2"
+							>The classic — good for simple products.</span
+						><span class="speed"
+							><i style="--w: 99%"></i>~0.5s</span
+						>
+					</div>
+					<div class="mt-row" data-stagger>
+						<span><code>u2net_human_seg</code></span
+						><span data-i18n="mod.r3">People only.</span
+						><span class="speed"
+							><i style="--w: 99%"></i>~0.5s</span
+						>
+					</div>
+					<div class="mt-row" data-stagger>
+						<span><code>birefnet-general-lite</code></span
+						><span data-i18n="mod.r4"
+							>More quality, still reasonable.</span
+						><span class="speed"><i style="--w: 55%"></i>~9s</span>
+					</div>
+					<div class="mt-row" data-stagger>
+						<span><code>birefnet-general</code></span
+						><span data-i18n="mod.r5"
+							>Best quality for any image.</span
+						><span class="speed"><i style="--w: 32%"></i>~20s</span>
+					</div>
+					<div class="mt-row" data-stagger>
+						<span><code>birefnet-portrait</code></span
+						><span data-i18n="mod.r6"
+							>People, top quality (tricky hair).</span
+						><span class="speed"><i style="--w: 32%"></i>~20s</span>
+					</div>
+				</div>
+			</section>
 
-  <!-- ░░░ FEATURES ░░░ -->
-  <section class="section" id="features">
-    <div class="section-head" data-reveal>
-      <h2 data-i18n="feat.h2">Built for <span class="accent">real work</span></h2>
-      <p data-i18n="feat.sub">From one image to hundreds. No limits on count or resolution.</p>
-    </div>
-    <div class="feature-grid">
-      <article class="feature" data-stagger>
-        <div class="f-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="10" width="18" height="4" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="16" width="18" height="4" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
-        </div>
-        <h3 data-i18n="feat.c1t">Processing queue</h3>
-        <p data-i18n="feat.c1p">Drop several images at once and they process one by one. Each result in its own card — nothing gets overwritten.</p>
-      </article>
-      <article class="feature" data-stagger>
-        <div class="f-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 7v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7L9 5H6a2 2 0 0 0-2 2Z"/><circle cx="12" cy="13" r="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>
-        </div>
-        <h3 data-i18n="feat.c2t">Persistent sessions</h3>
-        <p data-i18n="feat.c2p">Your results are saved locally and grouped into sessions. They survive reloads until you delete them.</p>
-      </article>
-      <article class="feature" data-stagger>
-        <div class="f-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
-        </div>
-        <h3 data-i18n="feat.c3t">PNG · WEBP · JPG</h3>
-        <p data-i18n="feat.c3p">Download in any format, with a transparent background or a solid color. Per image or all at once.</p>
-      </article>
-      <article class="feature" data-stagger>
-        <div class="f-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M9 3a4 4 0 0 0-4 4 3.5 3.5 0 0 0-1 6.5A3.5 3.5 0 0 0 7 20a3 3 0 0 0 5 0 3 3 0 0 0 5 0 3.5 3.5 0 0 0 3-6.5A3.5 3.5 0 0 0 19 7a4 4 0 0 0-4-4 3 3 0 0 0-6 0Z"/></svg>
-        </div>
-        <h3 data-i18n="feat.c4t">6 models</h3>
-        <p data-i18n="feat.c4p">ISNet by default (fast and great) and BiRefNet 2024 for maximum quality. Pick per use case.</p>
-      </article>
-      <article class="feature" data-stagger>
-        <div class="f-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="m13 2-9 11h6l-1 9 9-11h-6l1-9Z"/></svg>
-        </div>
-        <h3 data-i18n="feat.c5t">Alpha matting</h3>
-        <p data-i18n="feat.c5p">Fine-edge mode for hair, plants and meshes. Tune the thresholds for surgical results.</p>
-      </article>
-      <article class="feature" data-stagger>
-        <div class="f-ico">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M8 20h8"/></svg>
-        </div>
-        <h3 data-i18n="feat.c6t">Web + Desktop</h3>
-        <p data-i18n="feat.c6p">Use it in the browser or as a native app with <code>rm-bg desktop</code> (Electron). Same UI, no browser tabs.</p>
-      </article>
-    </div>
-  </section>
+			<!-- ░░░ SHOWCASE ░░░ -->
+			<section class="section showcase-sec">
+				<div class="section-head" data-reveal>
+					<h2 data-i18n="show.h2">
+						One tool,
+						<span class="accent">many ways to use it</span>
+					</h2>
+				</div>
+				<div class="showcase">
+					<article class="show-row">
+						<figure class="show-media">
+							<img
+								src="./assets/promo-local.png"
+								alt="Everything runs on your PC: 100% local and private"
+								loading="lazy" />
+						</figure>
+						<div class="show-text">
+							<span class="show-tag" data-i18n="show.r1tag"
+								>Real privacy</span
+							>
+							<h3 data-i18n="show.r1h">
+								Everything runs on your PC
+							</h3>
+							<p data-i18n="show.r1p">
+								The model runs on your own machine. Your images
+								are never uploaded to any server: it works
+								offline and nothing lingers in the cloud.
+							</p>
+							<ul class="show-points" data-i18n-list="show.r1pts">
+								<li>No internet</li>
+								<li>No cloud</li>
+								<li>No accounts</li>
+								<li>No API</li>
+							</ul>
+						</div>
+					</article>
 
-  <!-- ░░░ MODELS ░░░ -->
-  <section class="section models" id="models">
-    <div class="section-head" data-reveal>
-      <h2 data-i18n="mod.h2">Choose <span class="accent">speed or quality</span></h2>
-      <p data-i18n="mod.sub">Approximate time per image on Apple Silicon (CPU).</p>
-    </div>
-    <div class="model-table" data-reveal>
-      <div class="mt-row mt-head">
-        <span data-i18n="mod.col1">Model</span><span data-i18n="mod.col2">When to use it</span><span data-i18n="mod.col3">Speed</span>
-      </div>
-      <div class="mt-row" data-stagger><span><code>isnet-general-use</code><em class="tag-default">default</em></span><span data-i18n="mod.r1">Fast and great quality for any image.</span><span class="speed"><i style="--w:96%"></i>~1s</span></div>
-      <div class="mt-row" data-stagger><span><code>u2net</code></span><span data-i18n="mod.r2">The classic — good for simple products.</span><span class="speed"><i style="--w:99%"></i>~0.5s</span></div>
-      <div class="mt-row" data-stagger><span><code>u2net_human_seg</code></span><span data-i18n="mod.r3">People only.</span><span class="speed"><i style="--w:99%"></i>~0.5s</span></div>
-      <div class="mt-row" data-stagger><span><code>birefnet-general-lite</code></span><span data-i18n="mod.r4">More quality, still reasonable.</span><span class="speed"><i style="--w:55%"></i>~9s</span></div>
-      <div class="mt-row" data-stagger><span><code>birefnet-general</code></span><span data-i18n="mod.r5">Best quality for any image.</span><span class="speed"><i style="--w:32%"></i>~20s</span></div>
-      <div class="mt-row" data-stagger><span><code>birefnet-portrait</code></span><span data-i18n="mod.r6">People, top quality (tricky hair).</span><span class="speed"><i style="--w:32%"></i>~20s</span></div>
-    </div>
-  </section>
+					<article class="show-row reverse">
+						<figure class="show-media">
+							<img
+								src="./assets/promo-web-desktop.png"
+								alt="Use it your way: web + desktop"
+								loading="lazy" />
+						</figure>
+						<div class="show-text">
+							<span class="show-tag" data-i18n="show.r2tag"
+								>Web + Desktop</span
+							>
+							<h3 data-i18n="show.r2h">Use it your way</h3>
+							<p data-i18n="show.r2p">
+								Open it in the browser or install it as a
+								desktop app with the same interface. Drop
+								several images at once, watch the progress, and
+								download them all when it's done.
+							</p>
+							<ul class="show-points" data-i18n-list="show.r2pts">
+								<li>Batch processing</li>
+								<li>Drag &amp; drop</li>
+								<li>Bulk download</li>
+							</ul>
+						</div>
+					</article>
 
-  <!-- ░░░ SHOWCASE ░░░ -->
-  <section class="section showcase-sec">
-    <div class="section-head" data-reveal>
-      <h2 data-i18n="show.h2">One tool, <span class="accent">many ways to use it</span></h2>
-    </div>
-    <div class="showcase">
+					<article class="show-row">
+						<figure class="show-media">
+							<img
+								src="./assets/promo-formatos.png"
+								alt="More control: formats and models"
+								loading="lazy" />
+						</figure>
+						<div class="show-text">
+							<span class="show-tag" data-i18n="show.r3tag"
+								>Formats &amp; models</span
+							>
+							<h3 data-i18n="show.r3h">
+								More control over the result
+							</h3>
+							<p data-i18n="show.r3p">
+								Choose speed or quality and export however you
+								need: PNG, WEBP or JPG, with a transparent
+								background or a solid color. Switch models
+								depending on the image.
+							</p>
+							<ul class="show-points" data-i18n-list="show.r3pts">
+								<li>PNG · WEBP · JPG</li>
+								<li>Speed or quality</li>
+								<li>6 models</li>
+							</ul>
+						</div>
+					</article>
 
-      <article class="show-row">
-        <figure class="show-media"><img src="./assets/promo-local.png" alt="Everything runs on your PC: 100% local and private" loading="lazy" /></figure>
-        <div class="show-text">
-          <span class="show-tag" data-i18n="show.r1tag">Real privacy</span>
-          <h3 data-i18n="show.r1h">Everything runs on your PC</h3>
-          <p data-i18n="show.r1p">The model runs on your own machine. Your images are never uploaded to any server: it works offline and nothing lingers in the cloud.</p>
-          <ul class="show-points" data-i18n-list="show.r1pts"><li>No internet</li><li>No cloud</li><li>No accounts</li><li>No API</li></ul>
-        </div>
-      </article>
+					<article class="show-row reverse">
+						<figure class="show-media">
+							<img
+								src="./assets/promo-quita-fondos.png"
+								alt="Remove backgrounds without uploading anything"
+								loading="lazy" />
+						</figure>
+						<div class="show-text">
+							<span class="show-tag" data-i18n="show.r4tag"
+								>The result</span
+							>
+							<h3 data-i18n="show.r4h">
+								Remove backgrounds, upload nothing
+							</h3>
+							<p data-i18n="show.r4p">
+								What matters: clean cutouts even on hair and
+								tricky edges, in seconds and 100% local. Compare
+								before and after instantly with the slider.
+							</p>
+							<ul class="show-points" data-i18n-list="show.r4pts">
+								<li>Fine edges</li>
+								<li>In seconds</li>
+								<li>100% local</li>
+							</ul>
+						</div>
+					</article>
+				</div>
+			</section>
 
-      <article class="show-row reverse">
-        <figure class="show-media"><img src="./assets/promo-web-desktop.png" alt="Use it your way: web + desktop" loading="lazy" /></figure>
-        <div class="show-text">
-          <span class="show-tag" data-i18n="show.r2tag">Web + Desktop</span>
-          <h3 data-i18n="show.r2h">Use it your way</h3>
-          <p data-i18n="show.r2p">Open it in the browser or install it as a desktop app with the same interface. Drop several images at once, watch the progress, and download them all when it's done.</p>
-          <ul class="show-points" data-i18n-list="show.r2pts"><li>Batch processing</li><li>Drag &amp; drop</li><li>Bulk download</li></ul>
-        </div>
-      </article>
+			<!-- ░░░ INSTALL ░░░ -->
+			<section class="section install" id="install">
+				<div class="section-head" data-reveal>
+					<h2 data-i18n="inst.h2">
+						Get started in <span class="accent">one command</span>
+					</h2>
+					<p data-i18n="inst.sub">
+						You need Node.js and Python 3.9+ already installed.
+					</p>
+				</div>
+				<div class="install-grid">
+					<article class="inst-card" data-stagger>
+						<header>
+							<span class="inst-tag" data-i18n="inst.c1tag"
+								>Try it now</span
+							>
+							<h3 data-i18n="inst.c1h">npx (temporary)</h3>
+						</header>
+						<div class="codeblock">
+							<code data-type="npx -y remove-background-local"
+								>npx -y remove-background-local</code
+							><button
+								class="copy"
+								data-copy="npx -y remove-background-local"
+								data-i18n="btn.copy"
+								aria-label="Copy">
+								Copy
+							</button>
+						</div>
+						<p data-i18n="inst.c1p">
+							Downloads it temporarily, runs it and opens
+							<code>127.0.0.1:7860</code>. Leaves nothing
+							installed.
+						</p>
+					</article>
+					<article class="inst-card featured" data-stagger>
+						<header>
+							<span class="inst-tag" data-i18n="inst.c2tag"
+								>Recommended</span
+							>
+							<h3 data-i18n="inst.c2h">
+								npm (permanent + <code>rm-bg</code>)
+							</h3>
+						</header>
+						<div class="codeblock">
+							<code data-type="npm install -g remove-background-local"
+								>npm install -g remove-background-local</code
+							><button
+								class="copy"
+								data-copy="npm install -g remove-background-local"
+								data-i18n="btn.copy"
+								aria-label="Copy">
+								Copy
+							</button>
+						</div>
+						<div class="codeblock">
+							<code data-type="rm-bg web"
+								>rm-bg web
+								<span class="muted"
+									># or: rm-bg desktop</span
+								></code
+							><button
+								class="copy"
+								data-copy="rm-bg web"
+								data-i18n="btn.copy"
+								aria-label="Copy">
+								Copy
+							</button>
+						</div>
+						<p data-i18n="inst.c2p">
+							Installs the <code>rm-bg</code> command system-wide.
+							Ideal for regular use and the desktop app.
+						</p>
+					</article>
+					<article class="inst-card" data-stagger>
+						<header>
+							<span class="inst-tag" data-i18n="inst.c3tag"
+								>From source</span
+							>
+							<h3>git clone</h3>
+						</header>
+						<div class="codeblock">
+							<code data-type="git clone …/remove-background-local"
+								>git clone …/remove-background-local</code
+							><button
+								class="copy"
+								data-copy="git clone https://github.com/tecnomanu/remove-background-local"
+								data-i18n="btn.copy"
+								aria-label="Copy">
+								Copy
+							</button>
+						</div>
+						<div class="codeblock">
+							<code data-type="cd remove-background-local &amp;&amp; ./run.sh"
+								>cd remove-background-local &amp;&amp;
+								./run.sh</code
+							><button
+								class="copy"
+								data-copy="cd remove-background-local && ./run.sh"
+								data-i18n="btn.copy"
+								aria-label="Copy">
+								Copy
+							</button>
+						</div>
+						<p data-i18n="inst.c3p">
+							The first run creates the environment and downloads
+							the dependencies.
+						</p>
+					</article>
+				</div>
+			</section>
 
-      <article class="show-row">
-        <figure class="show-media"><img src="./assets/promo-formatos.png" alt="More control: formats and models" loading="lazy" /></figure>
-        <div class="show-text">
-          <span class="show-tag" data-i18n="show.r3tag">Formats &amp; models</span>
-          <h3 data-i18n="show.r3h">More control over the result</h3>
-          <p data-i18n="show.r3p">Choose speed or quality and export however you need: PNG, WEBP or JPG, with a transparent background or a solid color. Switch models depending on the image.</p>
-          <ul class="show-points" data-i18n-list="show.r3pts"><li>PNG · WEBP · JPG</li><li>Speed or quality</li><li>6 models</li></ul>
-        </div>
-      </article>
+			<!-- ░░░ FINAL CTA ░░░ -->
+			<section class="finalcta" data-reveal>
+				<img src="./assets/logo.png" alt="" class="finalcta-logo" />
+				<h2 data-i18n="cta.h2">
+					Your machine. Your tool.
+					<span class="accent">Your images.</span>
+				</h2>
+				<p data-i18n="cta.sub">
+					No limits, no account, no API. Open source and free.
+				</p>
+				<div class="hero-cta">
+					<a
+						class="btn btn-primary"
+						href="https://github.com/tecnomanu/remove-background-local"
+						target="_blank"
+						rel="noopener"
+						data-i18n="cta.b1"
+						>View on GitHub</a
+					>
+					<a class="btn btn-ghost" href="#install" data-i18n="cta.b2"
+						>Install</a
+					>
+				</div>
+			</section>
+		</main>
 
-      <article class="show-row reverse">
-        <figure class="show-media"><img src="./assets/promo-quita-fondos.png" alt="Remove backgrounds without uploading anything" loading="lazy" /></figure>
-        <div class="show-text">
-          <span class="show-tag" data-i18n="show.r4tag">The result</span>
-          <h3 data-i18n="show.r4h">Remove backgrounds, upload nothing</h3>
-          <p data-i18n="show.r4p">What matters: clean cutouts even on hair and tricky edges, in seconds and 100% local. Compare before and after instantly with the slider.</p>
-          <ul class="show-points" data-i18n-list="show.r4pts"><li>Fine edges</li><li>In seconds</li><li>100% local</li></ul>
-        </div>
-      </article>
+		<footer class="footer">
+			<div class="foot-top">
+				<div class="foot-brand">
+					<img src="./assets/logo.png" alt="" />
+					<span class="wm"
+						>rm<span class="wm-dot">.</span>background<span
+							class="wm-local">
+							local</span
+						></span
+					>
+				</div>
+				<div class="foot-links">
+					<a
+						href="https://github.com/tecnomanu/remove-background-local"
+						target="_blank"
+						rel="noopener"
+						>GitHub</a
+					>
+					<a
+						href="https://www.npmjs.com/package/remove-background-local"
+						target="_blank"
+						rel="noopener"
+						>npm</a
+					>
+					<a href="#install" data-i18n="nav.install">Install</a>
+				</div>
+			</div>
+			<div class="foot-bottom">
+				<span class="foot-by"
+					>&copy; <b>tecno.manu</b> (Manuel Bruña)</span
+				>
+				<a
+					class="foot-coffee"
+					href="https://cafecito.app/tecnomanu"
+					target="_blank"
+					rel="noopener">
+					<svg
+						viewBox="0 0 24 24"
+						width="15"
+						height="15"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true">
+						<path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+						<path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" />
+						<line x1="6" y1="1" x2="6" y2="4" />
+						<line x1="10" y1="1" x2="10" y2="4" />
+						<line x1="14" y1="1" x2="14" y2="4" />
+					</svg>
+					Buy me a coffee / Invitame un café
+				</a>
+			</div>
+			<p class="foot-note" data-i18n="foot.note">
+				Open source project under the MIT license. Not affiliated with
+				remove.bg or Canva Austria GmbH.
+			</p>
+		</footer>
 
-    </div>
-  </section>
-
-  <!-- ░░░ INSTALL ░░░ -->
-  <section class="section install" id="install">
-    <div class="section-head" data-reveal>
-      <h2 data-i18n="inst.h2">Get started in <span class="accent">one command</span></h2>
-      <p data-i18n="inst.sub">You need Node.js and Python 3.9+ already installed.</p>
-    </div>
-    <div class="install-grid">
-      <article class="inst-card" data-stagger>
-        <header><span class="inst-tag" data-i18n="inst.c1tag">Try it now</span><h3 data-i18n="inst.c1h">npx (temporary)</h3></header>
-        <div class="codeblock"><code>npx -y remove-background-local</code><button class="copy" data-copy="npx -y remove-background-local" data-i18n="btn.copy" aria-label="Copy">Copy</button></div>
-        <p data-i18n="inst.c1p">Downloads it temporarily, runs it and opens <code>127.0.0.1:7860</code>. Leaves nothing installed.</p>
-      </article>
-      <article class="inst-card featured" data-stagger>
-        <header><span class="inst-tag" data-i18n="inst.c2tag">Recommended</span><h3 data-i18n="inst.c2h">npm (permanent + <code>rm-bg</code>)</h3></header>
-        <div class="codeblock"><code>npm install -g remove-background-local</code><button class="copy" data-copy="npm install -g remove-background-local" data-i18n="btn.copy" aria-label="Copy">Copy</button></div>
-        <div class="codeblock"><code>rm-bg web <span class="muted"># or: rm-bg desktop</span></code><button class="copy" data-copy="rm-bg web" data-i18n="btn.copy" aria-label="Copy">Copy</button></div>
-        <p data-i18n="inst.c2p">Installs the <code>rm-bg</code> command system-wide. Ideal for regular use and the desktop app.</p>
-      </article>
-      <article class="inst-card" data-stagger>
-        <header><span class="inst-tag" data-i18n="inst.c3tag">From source</span><h3>git clone</h3></header>
-        <div class="codeblock"><code>git clone …/remove-background-local</code><button class="copy" data-copy="git clone https://github.com/tecnomanu/remove-background-local" data-i18n="btn.copy" aria-label="Copy">Copy</button></div>
-        <div class="codeblock"><code>cd remove-background-local &amp;&amp; ./run.sh</code><button class="copy" data-copy="cd remove-background-local && ./run.sh" data-i18n="btn.copy" aria-label="Copy">Copy</button></div>
-        <p data-i18n="inst.c3p">The first run creates the environment and downloads the dependencies.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- ░░░ FINAL CTA ░░░ -->
-  <section class="finalcta" data-reveal>
-    <img src="./assets/logo.png" alt="" class="finalcta-logo" />
-    <h2 data-i18n="cta.h2">Your machine. Your tool. <span class="accent">Your images.</span></h2>
-    <p data-i18n="cta.sub">No limits, no account, no API. Open source and free.</p>
-    <div class="hero-cta">
-      <a class="btn btn-primary" href="https://github.com/tecnomanu/remove-background-local" target="_blank" rel="noopener" data-i18n="cta.b1">View on GitHub</a>
-      <a class="btn btn-ghost" href="#install" data-i18n="cta.b2">Install</a>
-    </div>
-  </section>
-
-</main>
-
-<footer class="footer">
-  <div class="foot-top">
-    <div class="foot-brand">
-      <img src="./assets/logo.png" alt="" />
-      <span class="wm">rm<span class="wm-dot">.</span>background<span class="wm-local"> local</span></span>
-    </div>
-    <div class="foot-links">
-      <a href="https://github.com/tecnomanu/remove-background-local" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://www.npmjs.com/package/remove-background-local" target="_blank" rel="noopener">npm</a>
-      <a href="#install" data-i18n="nav.install">Install</a>
-    </div>
-  </div>
-  <div class="foot-bottom">
-    <span class="foot-by">&copy; <b>tecno.manu</b> (Manuel Bruña)</span>
-    <a class="foot-coffee" href="https://cafecito.app/tecnomanu" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-      Buy me a coffee / Invitame un café
-    </a>
-  </div>
-  <p class="foot-note" data-i18n="foot.note">Open source project under the MIT license. Not affiliated with remove.bg or Canva Austria GmbH.</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script src="./i18n.js?v=5"></script>
-<script src="./main.js?v=5"></script>
-</body>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+		<script src="./i18n.js?v=8"></script>
+		<script src="./main.js?v=10"></script>
+	</body>
 </html>

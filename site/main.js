@@ -66,18 +66,176 @@
     io.observe(ba);
   })();
 
-  /* ── terminal typing ── */
-  (function typeTerminal() {
+  /* ── demo background swatches ── */
+  (function baBackground() {
+    const ba = document.getElementById("ba");
+    const picker = document.getElementById("baBgPicker");
+    const custom = document.getElementById("baBgCustom");
+    if (!ba || !picker) return;
+
+    const CHECKER_BG =
+      "linear-gradient(45deg, #2a2a35 25%, transparent 25%)," +
+      "linear-gradient(-45deg, #2a2a35 25%, transparent 25%)," +
+      "linear-gradient(45deg, transparent 75%, #2a2a35 75%)," +
+      "linear-gradient(-45deg, transparent 75%, #2a2a35 75%)";
+
+    const presetBgs = new Set(
+      Array.from(picker.querySelectorAll("[data-bg]")).map((sw) => sw.dataset.bg)
+    );
+
+    const setBg = (bg) => {
+      const isCustom = bg.startsWith("#") && !presetBgs.has(bg);
+      picker.querySelectorAll(".ba-swatch").forEach((sw) => {
+        const match = sw.dataset.bg === bg ||
+          (isCustom && sw.classList.contains("ba-swatch-custom"));
+        sw.classList.toggle("active", !!match);
+      });
+      if (bg === "checker") {
+        ba.style.backgroundColor = "#1f1f27";
+        ba.style.backgroundImage = CHECKER_BG;
+        ba.style.backgroundSize = "22px 22px";
+        ba.style.backgroundPosition = "0 0, 0 11px, 11px -11px, 11px 0";
+      } else {
+        ba.style.backgroundColor = bg;
+        ba.style.backgroundImage = "none";
+        ba.style.backgroundSize = "";
+        ba.style.backgroundPosition = "";
+      }
+    };
+
+    picker.querySelectorAll("[data-bg]").forEach((btn) => {
+      btn.addEventListener("click", () => setBg(btn.dataset.bg));
+    });
+    if (custom) {
+      custom.addEventListener("input", (e) => setBg(e.target.value));
+    }
+  })();
+
+  /* ── demo quality toggle (high / low) ── */
+  (function baQuality() {
+    const after = document.getElementById("baAfter");
+    const group = document.getElementById("baQuality");
+    if (!after || !group) return;
+
+    const SRC = {
+      high: "./assets/dog-despues-high.png",
+      low: "./assets/dog-despues-low.png",
+    };
+
+    group.querySelectorAll("[data-quality]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const q = btn.dataset.quality;
+        if (!SRC[q]) return;
+        after.src = SRC[q];
+        group.querySelectorAll("[data-quality]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.quality === q);
+        });
+      });
+    });
+  })();
+
+  /* ── word-by-word typing (hero title + terminal) ── */
+  function typeWordByWord(el, msPerWord, done) {
+    const text = (el.dataset.fullText || el.textContent || el.getAttribute("data-type") || "").trim();
+    const words = text.split(/\s+/).filter(Boolean);
+    if (!words.length) { if (done) done(); return; }
+    el.dataset.fullText = text;
+    el.textContent = "";
+    let i = 0;
+    const tick = () => {
+      if (i < words.length) {
+        el.textContent += (i ? " " : "") + words[i++];
+        setTimeout(tick, msPerWord);
+      } else if (done) done();
+    };
+    tick();
+  }
+
+  function typeHeroTitle(done) {
+    const lines = Array.from(document.querySelectorAll(".hero-title .line"));
+    if (!lines.length) { if (done) done(); return; }
+    lines.forEach((line) => { line.dataset.fullText = line.textContent.trim(); line.textContent = ""; });
+    let idx = 0;
+    const nextLine = () => {
+      if (idx >= lines.length) { if (done) done(); return; }
+      typeWordByWord(lines[idx], 170, () => {
+        idx++;
+        setTimeout(nextLine, 260);
+      });
+    };
+    nextLine();
+  }
+
+  function typeCharByChar(el, msPerChar, done) {
+    const text = el.getAttribute("data-type") || el.dataset.fullText || el.textContent || "";
+    if (!text) { if (done) done(); return; }
+    el.textContent = "";
+    let i = 0;
+    const tick = () => {
+      el.textContent = text.slice(0, i);
+      if (i++ <= text.length) setTimeout(tick, msPerChar);
+      else if (done) done();
+    };
+    tick();
+  }
+
+  function typeTerminal() {
     const el = document.querySelector(".term-type");
     if (!el) return;
     const text = el.getAttribute("data-type") || "";
     if (reduceMotion) { el.textContent = text; return; }
-    let i = 0;
-    const tick = () => {
-      el.textContent = text.slice(0, i);
-      if (i++ <= text.length) setTimeout(tick, 45);
+    typeCharByChar(el, 45);
+  }
+
+  if (!reduceMotion) {
+    setTimeout(() => typeHeroTitle(() => setTimeout(typeTerminal, 220)), 380);
+  }
+
+  /* ── install cards: type commands on scroll ── */
+  (function setupInstallTyping() {
+    const grid = document.querySelector(".install-grid");
+    if (!grid || reduceMotion) return;
+
+    const queues = [...grid.querySelectorAll(".inst-card")].map((card) =>
+      [...card.querySelectorAll(".codeblock code[data-type]")].map((code) => {
+        const muted = code.querySelector(".muted");
+        if (muted) {
+          code.dataset.mutedHtml = muted.outerHTML;
+          muted.remove();
+        }
+        code.dataset.fullText = code.getAttribute("data-type") || "";
+        code.textContent = "";
+        return code;
+      })
+    );
+
+    let played = false;
+    const play = () => {
+      if (played) return;
+      played = true;
+      let delay = 480;
+      queues.forEach((codes, cardIdx) => {
+        codes.forEach((code, codeIdx) => {
+          setTimeout(() => {
+            typeCharByChar(code, 32, () => {
+              if (code.dataset.mutedHtml) {
+                code.insertAdjacentHTML("beforeend", code.dataset.mutedHtml);
+                delete code.dataset.mutedHtml;
+              }
+            });
+          }, delay + cardIdx * 220 + codeIdx * 520);
+        });
+      });
     };
-    setTimeout(tick, 900);
+
+    if (hasGSAP && window.ScrollTrigger) {
+      window.ScrollTrigger.create({ trigger: grid, start: "top 82%", once: true, onEnter: play });
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) { play(); io.disconnect(); } });
+      }, { threshold: 0.2 });
+      io.observe(grid);
+    }
   })();
 
   /* ── copy buttons ── */
@@ -128,7 +286,7 @@
     .from(".nav-links a", { y: -10, autoAlpha: 0, stagger: 0.06, duration: 0.5 }, "<0.1")
     .from(".nav-cta", { y: -10, autoAlpha: 0, duration: 0.5 }, "<")
     .from(".pill-badge", { y: 20, autoAlpha: 0 }, "-=0.2")
-    .from(".hero-title [data-word]", { y: 40, autoAlpha: 0, stagger: 0.12, duration: 0.7, ease: "power4.out" }, "-=0.3")
+    .from(".hero-title", { y: 24, autoAlpha: 0, duration: 0.5, ease: "power4.out" }, "-=0.3")
     .from(".hero-sub", { y: 20, autoAlpha: 0 }, "-=0.4")
     .from(".hero-cta", { y: 20, autoAlpha: 0 }, "-=0.5")
     .from(".hero-term", { y: 20, autoAlpha: 0 }, "-=0.5")

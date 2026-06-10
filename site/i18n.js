@@ -11,14 +11,17 @@
 
     "hero.badge": "100% local · open source",
     "hero.t1": "Quitá fondos",
-    "hero.t2": "sin subir nada",
-    "hero.t3": "a internet",
+    "hero.t2": "completamente local",
+    "hero.t3": "y gratis.",
     "hero.sub": "Una alternativa offline a remove.bg que corre <b>entera en tu máquina</b>. Tus imágenes nunca salen de tu PC. Sin nube, sin cuentas, sin API.",
     "hero.cta1": "Instalar ahora",
     "hero.cta2": "Ver en GitHub →",
 
     "ba.before": "Antes",
     "ba.after": "Después",
+    "ba.bgLabel": "Fondo",
+    "ba.qualityHigh": "Alta",
+    "ba.qualityLow": "Baja",
     "ba.caption": "Arrastrá para comparar · resultado real del modelo",
 
     "priv.h2": "Todo pasa en tu PC. <span class=\"accent\">100% local y privado.</span>",
