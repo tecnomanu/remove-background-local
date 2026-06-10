@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.15.1](https://github.com/tecnomanu/remove-background-local/compare/v1.15.0...v1.15.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* **site:** cerrar gaps SEO de OpenGraph.to ([f0c0055](https://github.com/tecnomanu/remove-background-local/commit/f0c0055d16645f6120353e1d6773c4a33473ad03))
+* **site:** og:image 1200x630 y dimensiones antes de type ([df3cc9a](https://github.com/tecnomanu/remove-background-local/commit/df3cc9ae5eb64ad64d52fc9b2b68a2f6d12460e8))
+* **site:** og:image en JPEG para compatibilidad con Meta ([3a3566b](https://github.com/tecnomanu/remove-background-local/commit/3a3566bc76ef64c197f7a22f180a4606d04e0830))
+
 ## [1.15.0](https://github.com/tecnomanu/remove-background-local/compare/v1.14.0...v1.15.0) (2026-06-10)
 
 
