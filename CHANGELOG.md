@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.2](https://github.com/tecnomanu/remove-background-local/compare/v1.15.1...v1.15.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* **site:** enhance background demo and quality toggle features ([acb4a2f](https://github.com/tecnomanu/remove-background-local/commit/acb4a2f80717f7c44b53e22be29ee8edbfa66407))
+
 ## [1.15.1](https://github.com/tecnomanu/remove-background-local/compare/v1.15.0...v1.15.1) (2026-06-10)
 
 
